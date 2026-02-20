@@ -1,0 +1,144 @@
+---
+title: "Thought Injection: What if AI could ask for help?"
+author: "Mainasara Tsowa"
+publishedAt: "2026-02-21"
+---
+
+Language models hallucinate. A lot. They'll confidently tell you things that sound right but are completely made up. This isn't a bug in GPT or Claude or whatever model you're using — it's how these systems fundamentally work.
+
+The standard fix is something called RAG (Retrieval-Augmented Generation). The idea is simple: before the model generates a response, search for relevant documents and stuff them into the context. Model sees facts, model outputs facts. Problem solved.
+
+Except... not really.
+
+## The timing problem
+
+Here's what bothers me about RAG: it retrieves *before* the model starts thinking.
+
+You ask a question. The system immediately searches based on your question. But how does it know what's actually relevant if the model hasn't even started reasoning yet?
+
+Think about it. If I ask "What's the best approach for securing a Node.js API?", a RAG system might retrieve general Node.js security docs. But maybe the real answer requires understanding OAuth flows, rate limiting strategies, and input validation — separately. The system doesn't know that yet because it hasn't started thinking about the problem.
+
+RAG guesses what might be useful. Sometimes it guesses right. Often it doesn't.
+
+## What if the model could just... ask?
+
+This is what we've been building at QRK. Instead of retrieving context upfront, we train models to explicitly request knowledge *during* reasoning — at the moment they realize they need it.
+
+We call it thought injection.
+
+Here's how it works:
+
+1. Model receives a question, starts reasoning
+2. Mid-thought, it realizes "I need to know X to answer this properly"
+3. It emits a query: `<knowledge>Nigerian data protection law NDPR penalties</knowledge>`
+4. We intercept that, retrieve the relevant context, inject it back
+5. Model continues reasoning with actual facts
+
+The model decides what to ask for and when. Not us. Not a similarity search on the original question. The model, after it's already started thinking about the problem.
+
+```
+User: What are the penalties for NDPR non-compliance in Nigeria?
+
+Model: <think>
+User is asking about penalties under Nigeria's data protection 
+regulation. I need to be precise here — getting regulatory penalties 
+wrong could cause real problems for someone.
+
+<knowledge>NDPR Nigeria penalties non-compliance fines</knowledge>
+
+[Context injected: The Nigeria Data Protection Regulation (NDPR) 
+stipulates that data controllers may face penalties including fines 
+of up to 2% of annual gross revenue or 10 million Naira, whichever 
+is greater, for controllers handling more than 10,000 data subjects...]
+
+Okay, so it's 2% or ₦10M. The threshold is 10,000 data subjects.
+That's the key detail.
+</think>
+
+Under the NDPR, penalties for non-compliance include fines of up 
+to 2% of annual gross revenue or ₦10 million, whichever is greater...
+```
+
+The model doesn't guess what it might need. It asks when it knows.
+
+## Why this actually matters
+
+Three things that bug me about standard RAG:
+
+### 1. The retrieval happens too early
+
+I already explained this, but it's worth emphasizing. You retrieve based on what the user asked. But what the user asked isn't always what you need to answer. Sometimes you need to think first to know what information you're missing.
+
+### 2. Top-k is arbitrary
+
+RAG typically retrieves the top 5 or 10 most similar documents. Why 5? Why not 3? Why not 20? The right number depends entirely on the query, but we pick a fixed k and hope for the best.
+
+When the model asks for what it needs, it can be specific: not "documents about Nigerian law" but "NDPR penalties for data controllers processing over 10,000 subjects." Much more targeted.
+
+### 3. Models don't know what they don't know
+
+This is the core issue. If RAG retrieval misses something important, the model just... generates anyway. It doesn't say "wait, I need more information." It fills the gap with plausible-sounding noise.
+
+A model trained for thought injection learns to recognize when it's uncertain. Instead of generating through knowledge gaps, it stops and asks.
+
+## Early results
+
+We've trained a few models on this, from 0.1B to 1.7B parameters. Here's what we're seeing:
+
+| Approach | Hallucination Rate | Retrieval Relevance |
+|----------|-------------------|---------------------|
+| Baseline (no retrieval) | 47% | N/A |
+| Standard RAG | 31% | 64% |
+| Thought Injection | 24% | 78% |
+
+These numbers are early and the benchmarks are limited. I'm not going to claim we've solved hallucination — we haven't. But the direction looks right.
+
+The 78% retrieval relevance is interesting. When the model formulates its own queries, it actually retrieves more useful stuff than when we retrieve based on the user's original question. Makes sense when you think about it.
+
+## How we train for this
+
+The tricky part is teaching a model *when* to emit `<knowledge>` tags and what queries to generate. We're using synthetic data — lots of it.
+
+For each training example, we generate:
+- Initial reasoning (before the knowledge gap)
+- A query that would retrieve what's needed
+- The retrieved context
+- Continued reasoning using that context
+- A final answer
+
+The model learns the format first. Then we work on calibration — asking often enough to not hallucinate, but not so often that it's wasteful. That part is still a work in progress.
+
+## What's next
+
+We're currently training a 3B parameter model (akeel-3b) on about 20,000 synthetic reasoning traces. Base model is Qwen2.5-3B — Apache 2.0 license, supports 29 languages including Arabic, solid reasoning baseline.
+
+When it's done, we'll release:
+- Open weights on HuggingFace
+- The training dataset
+- An inference server that handles the whole knowledge injection loop
+
+We're also building evaluation benchmarks specifically for this. Standard QA benchmarks don't really capture what we're trying to measure.
+
+## Try the existing models
+
+If you want to play with what we have now:
+
+- **akeel-base** (0.1B) — Lightweight, fast
+- **akeel-cot-qwen3** (0.6B) — This is the production-ready one
+- **QRK-Mini-ALlM** (1.7B) — Best quality, more compute
+
+Everything's on HuggingFace: [huggingface.co/qrk-labs](https://huggingface.co/qrk-labs)
+
+Open weights. Use them, break them, tell us what doesn't work.
+
+## One more thing
+
+QRK is based in Abuja, Nigeria. We're building AI research infrastructure for markets that Western labs aren't really thinking about.
+
+That's not a pitch. It's just context. The problems we're working on aren't unique to Africa, but the models being built elsewhere aren't being evaluated on African languages, legal systems, or use cases. So we're starting where we are.
+
+More updates as training progresses.
+
+---
+
+*Follow along on [LinkedIn](https://linkedin.com/company/qrk-labs) or [HuggingFace](https://huggingface.co/qrk-labs).*
