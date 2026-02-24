@@ -3,11 +3,57 @@ import { ThemeProvider } from "@/lib/theme";
 import "@/styles/globals.css";
 import { Header } from "@/components/header";
 import { PostHogProvider } from "@/components/PostHogProvider";
+import { OrganizationJsonLd, WebSiteJsonLd } from "@/components/json-ld";
 
 export const metadata: Metadata = {
-  title: "QRK | Tech For Humanity",
+  title: {
+    default: "QRK Labs | Human-Centric AI Research",
+    template: "%s | QRK Labs",
+  },
   description:
-    'QRK is a "tech for humanity" research startup from Abuja, Nigeria. Dedicated to using their skills to improve tech for the purpose of enhancing the human experience',
+    "AI research lab from Nigeria building human-centric language models. Open weights, transparent research, global perspective.",
+  keywords: [
+    "AI research",
+    "human-centric AI",
+    "language models",
+    "Nigeria",
+    "Africa AI",
+    "thought injection",
+    "RAG alternative",
+    "open source AI",
+    "hallucination reduction",
+  ],
+  authors: [{ name: "QRK Labs" }],
+  creator: "QRK Labs",
+  metadataBase: new URL("https://qrk.ng"),
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://qrk.ng",
+    siteName: "QRK Labs",
+    title: "QRK Labs | Human-Centric AI Research",
+    description:
+      "AI research lab from Nigeria building human-centric language models. Open weights, transparent research, global perspective.",
+    images: [
+      {
+        url: "/og/default.png",
+        width: 1200,
+        height: 630,
+        alt: "QRK Labs - Human-Centric AI Research",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "QRK Labs | Human-Centric AI Research",
+    description:
+      "AI research lab from Nigeria building human-centric language models. Open weights, transparent research, global perspective.",
+    images: ["/og/default.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
   icons: {
     icon: [
       {
@@ -36,6 +82,8 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap"
           rel="stylesheet"
         />
+        <OrganizationJsonLd />
+        <WebSiteJsonLd />
       </head>
       <body className="h-full w-full">
         <PostHogProvider>
@@ -44,8 +92,9 @@ export default function RootLayout({
               <Header
                 links={[
                   { label: "Home", href: "/" },
-                  { label: "About Us", href: "/about-us" },
+                  { label: "Research", href: "/research" },
                   { label: "Blog", href: "/blog" },
+                  { label: "About", href: "/about-us" },
                 ]}
               />
               {children}
@@ -56,7 +105,7 @@ export default function RootLayout({
             <div className="container mx-auto px-4 md:px-8">
               <div className="flex flex-col md:flex-row items-center justify-between gap-4 py-8">
                 <p className="text-sm text-muted-foreground font-light">
-                  QRK | Tech For Humanity | 2025
+                  QRK Labs | Human-Centric AI Research | 2026
                 </p>
                 <div className="flex items-center gap-6">
                   <a
