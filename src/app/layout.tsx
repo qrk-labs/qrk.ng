@@ -92,8 +92,9 @@ export default function RootLayout({
               <Header
                 links={[
                   { label: "Home", href: "/" },
-                  { label: "About Us", href: "/about-us" },
+                  { label: "Research", href: "/research" },
                   { label: "Blog", href: "/blog" },
+                  { label: "About", href: "/about-us" },
                 ]}
               />
               {children}

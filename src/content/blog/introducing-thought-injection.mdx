@@ -7,11 +7,11 @@ tags: ["thought injection", "RAG alternative", "hallucination reduction", "LLM r
 image: "/og/blog/introducing-thought-injection.png"
 ---
 
-Language models hallucinate. A lot. They'll confidently tell you things that sound right but are completely made up. This isn't a bug in GPT or Claude or whatever model you're using — it's how these systems fundamentally work.
+Ask a language model about Nigerian data protection law, and it'll confidently quote regulations that don't exist. Ask about Indonesian tax codes or Turkish contract law, and you'll get the same: plausible-sounding fiction delivered with total certainty.
 
-The standard fix is something called RAG (Retrieval-Augmented Generation). The idea is simple: before the model generates a response, search for relevant documents and stuff them into the context. Model sees facts, model outputs facts. Problem solved.
+This is the hallucination problem, and it's not an edge case. For anyone building AI systems outside Silicon Valley's comfort zone — where training data is sparse and legal frameworks differ — it's the central challenge.
 
-Except... not really.
+The standard fix is RAG (Retrieval-Augmented Generation). Search for relevant documents first, stuff them into context, let the model generate. Simple. Except it doesn't work as well as people think.
 
 ## The timing problem
 
@@ -134,14 +134,20 @@ Everything's on HuggingFace: [huggingface.co/qrk-labs](https://huggingface.co/qr
 
 Open weights. Use them, break them, tell us what doesn't work.
 
-## One more thing
+## Why we're building this from Nigeria
 
-QRK is based in Abuja, Nigeria. We're building AI research infrastructure for markets that Western labs aren't really thinking about.
+QRK is based in Abuja, Nigeria. This isn't incidental to what we're building — it's central to it.
 
-That's not a pitch. It's just context. The problems we're working on aren't unique to Africa, but the models being built elsewhere aren't being evaluated on African languages, legal systems, or use cases. So we're starting where we are.
+When you're working with AI in markets outside the US and Western Europe, you quickly realize that most models weren't built with your context in mind. They hallucinate more on local regulations. They stumble on non-English text. They've never seen your legal framework in training.
+
+The standard response is to wait for bigger labs to eventually get around to your market. We decided to build instead.
+
+Thought injection emerged from a practical need: we needed models that could work reliably with Nigerian legal documents, Hausa language content, and regional business contexts. The technique turned out to be generally useful — it works just as well for German tax law or Brazilian regulatory compliance — but it was born from solving our own problems first.
+
+We're releasing everything open weights. If you're building AI infrastructure for markets that Western labs aren't prioritizing — Indonesia, Turkey, Brazil, the Middle East, the rest of Africa — we want this to be useful to you. The approach isn't specific to any region. The perspective is.
 
 More updates as training progresses.
 
 ---
 
-*Follow along on [LinkedIn](https://linkedin.com/company/qrk-labs) or [HuggingFace](https://huggingface.co/qrk-labs).*
+*Follow along on [LinkedIn](https://linkedin.com/company/qrk-labs) or [HuggingFace](https://huggingface.co/qrk-labs). Questions or collaboration ideas? Reach out at [research@qrk.ng](mailto:research@qrk.ng).*
