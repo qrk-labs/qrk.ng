@@ -5,17 +5,18 @@ publishedAt: "2026-02-23"
 abstract: "We present technical implementation details for thought injection, a method for augmenting language model generation with on-demand knowledge retrieval. This document covers the training data generation pipeline, inference architecture, and preliminary evaluation results on knowledge-intensive QA tasks."
 tags: ["LLM", "RAG", "retrieval", "reasoning", "synthetic data"]
 status: "preprint"
+published: false
 ---
 
 ## Introduction
 
 This document provides technical details for implementing thought injection in practice. For a conceptual overview, see our [introduction post](/blog/introducing-thought-injection).
 
-## Training Data Generation
+### Training Data Generation
 
 The core challenge is teaching models to emit `<knowledge>` tags at appropriate moments. We use a synthetic data generation pipeline with the following stages:
 
-### Stage 1: Seed Question Generation
+#### Stage 1: Seed Question Generation
 
 We generate questions that require factual knowledge to answer correctly:
 
@@ -33,7 +34,7 @@ Difficulty: {difficulty}
 
 Domains include: law (Nigerian, EU, etc.), medicine, finance, technology, and regional business practices.
 
-### Stage 2: Reasoning Trace Construction
+#### Stage 2: Reasoning Trace Construction
 
 For each question, we generate a multi-step reasoning trace:
 
@@ -44,7 +45,7 @@ For each question, we generate a multi-step reasoning trace:
 5. **Continued reasoning** — The model processes the new information
 6. **Final answer** — The model produces its response
 
-### Stage 3: Query Quality Filtering
+#### Stage 3: Query Quality Filtering
 
 Not all generated queries are equally useful. We filter based on:
 
@@ -52,7 +53,7 @@ Not all generated queries are equally useful. We filter based on:
 - **Retrieval relevance** — Does the query actually retrieve useful documents?
 - **Answer dependency** — Is the correct answer actually in the retrieved context?
 
-## Inference Architecture
+### Inference Architecture
 
 The inference loop handles the orchestration between model generation and retrieval:
 
@@ -72,7 +73,7 @@ Key implementation details:
 4. **Context injection** — Retrieved text is formatted and appended to the context
 5. **Generation resumption** — Model continues from the injection point
 
-### Handling Multiple Queries
+#### Handling Multiple Queries
 
 Models can emit multiple `<knowledge>` requests within a single generation. We handle this by:
 
@@ -80,31 +81,31 @@ Models can emit multiple `<knowledge>` requests within a single generation. We h
 - Limiting total injections per response (default: 3)
 - Deduplicating semantically similar queries
 
-## Evaluation Methodology
+### Evaluation Methodology
 
 Standard QA benchmarks don't capture what we're measuring. We developed evaluation along three axes:
 
-### 1. Hallucination Rate
+#### 1. Hallucination Rate
 
 We manually annotate model responses for factual accuracy, categorizing errors as:
 - **Hard hallucinations** — Completely fabricated facts
 - **Soft hallucinations** — Partially correct but misleading information
 - **Omissions** — Missing important caveats or context
 
-### 2. Retrieval Relevance
+#### 2. Retrieval Relevance
 
 For each knowledge query emitted:
 - Human annotators rate relevance of retrieved documents (1-5)
 - We measure whether the retrieved context contains the answer
 - We track false positive rate (unnecessary retrievals)
 
-### 3. Query Timing Calibration
+#### 3. Query Timing Calibration
 
 - **Under-retrieval** — Model should have asked but didn't (leads to hallucination)
 - **Over-retrieval** — Model asked when it didn't need to (wasteful)
 - **Optimal retrieval** — Model asks exactly when beneficial
 
-## Preliminary Results
+### Preliminary Results
 
 Testing on a held-out set of 500 knowledge-intensive questions:
 
@@ -117,26 +118,26 @@ Testing on a held-out set of 500 knowledge-intensive questions:
 
 The improvement in hard hallucination rate is the primary result. Soft hallucination rates are similar because they often stem from reasoning errors rather than missing knowledge.
 
-## Limitations and Future Work
+### Limitations and Future Work
 
-### Current Limitations
+#### Current Limitations
 
 1. **Training data quality** — Synthetic data has biases; models learn to emit queries in patterns that mirror the training distribution
 2. **Latency** — Each retrieval adds ~200ms; multiple queries compound
 3. **Context length** — Injected context consumes tokens; long chains of retrievals can exceed limits
 
-### Planned Improvements
+#### Planned Improvements
 
 1. **Human feedback loop** — Collect preference data on query quality and retrieval usefulness
 2. **Adaptive retrieval** — Learn when retrieval is unlikely to help
 3. **Multi-hop reasoning** — Support queries that build on previous retrievals
 
-## Reproducibility
+### Reproducibility
 
 All models are available on HuggingFace: [huggingface.co/qrk-labs](https://huggingface.co/qrk-labs)
 
 Training data and evaluation scripts will be released alongside the 3B model (akeel-3b).
 
-## Acknowledgments
+### Acknowledgments
 
 This work was conducted at QRK Labs in Abuja, Nigeria. We thank the open source community for the foundational tools that made this work possible.

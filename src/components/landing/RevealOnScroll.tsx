@@ -27,6 +27,18 @@ export function RevealOnScroll({
     const element = ref.current;
     if (!element) return;
 
+    // Check if element is already in viewport on mount
+    const rect = element.getBoundingClientRect();
+    const isInViewport =
+      rect.top < window.innerHeight && rect.bottom > 0;
+
+    if (isInViewport) {
+      setTimeout(() => {
+        setIsVisible(true);
+      }, delay);
+      return;
+    }
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry?.isIntersecting) {

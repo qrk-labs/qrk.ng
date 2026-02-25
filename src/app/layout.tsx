@@ -101,24 +101,24 @@ export default function RootLayout({
             </ThemeProvider>
           </div>
 
-          <footer className="border-t border-border/40 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60">
+          <footer className="border-border/40 bg-background/80 supports-[backdrop-filter]:bg-background/60 border-t backdrop-blur-xl">
             <div className="container mx-auto px-4 md:px-8">
-              <div className="flex flex-col md:flex-row items-center justify-between gap-4 py-8">
-                <p className="text-sm text-muted-foreground font-light">
+              <div className="flex flex-col items-center justify-between gap-4 py-8 md:flex-row">
+                <p className="text-muted-foreground text-sm font-light">
                   QRK Labs | Human-Centric AI Research | 2026
                 </p>
                 <div className="flex items-center gap-6">
                   <a
-                    href="https://github.com/qrk-tech"
+                    href="https://github.com/qrk-labs"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                    className="text-muted-foreground hover:text-primary text-sm transition-colors"
                   >
                     GitHub
                   </a>
                   <a
                     href="mailto:hello@qrk.ng"
-                    className="text-sm text-muted-foreground hover:text-primary transition-colors"
+                    className="text-muted-foreground hover:text-primary text-sm transition-colors"
                   >
                     Contact
                   </a>

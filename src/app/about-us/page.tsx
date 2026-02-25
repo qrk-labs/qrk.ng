@@ -11,20 +11,20 @@ export default function AboutPage() {
   return (
     <main>
       {/* Hero Section */}
-      <section className="relative min-h-[80vh] flex items-center overflow-hidden pt-20">
+      <section className="relative flex min-h-[80vh] items-center overflow-hidden pt-20">
         <FloatingShapes />
 
-        <div className="container mx-auto px-4 md:px-8 relative z-10">
+        <div className="relative z-10 container mx-auto px-4 md:px-8">
           <div className="max-w-5xl">
             <SplitText
               text="WHO ARE WE?"
-              className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl font-extralight tracking-tighter leading-[0.9]"
+              className="text-5xl leading-[0.9] font-extralight tracking-tighter sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl"
               staggerDelay={0.04}
               enableGlitch
             />
 
             <RevealOnScroll animation="fade-up" delay={400}>
-              <p className="mt-8 md:mt-12 text-xl md:text-2xl text-muted-foreground font-light max-w-2xl leading-relaxed">
+              <p className="text-muted-foreground mt-8 max-w-2xl text-xl leading-relaxed font-light md:mt-12 md:text-2xl">
                 A technology research lab from Abuja, Nigeria, building software
                 that puts humans first.
               </p>
@@ -34,24 +34,24 @@ export default function AboutPage() {
       </section>
 
       {/* The Team Section */}
-      <section className="py-24 md:py-32 relative overflow-hidden">
+      <section className="relative overflow-hidden py-24 md:py-32">
         <div className="container mx-auto px-4 md:px-8">
           <div className="grid grid-cols-12 gap-8 md:gap-16">
             <RevealOnScroll
               animation="fade-left"
               className="col-span-12 lg:col-span-6"
             >
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-extralight tracking-tight leading-tight mb-8">
+              <h2 className="mb-8 text-3xl leading-tight font-extralight tracking-tight md:text-4xl lg:text-5xl">
                 A small team of{" "}
-                <span className="italic font-light">engineers</span>
+                <span className="font-light italic">engineers</span>
               </h2>
-              <div className="space-y-6 text-muted-foreground">
-                <p className="text-base md:text-lg leading-relaxed">
+              <div className="text-muted-foreground space-y-6">
+                <p className="text-base leading-relaxed md:text-lg">
                   We work across web development, cybersecurity, and software
                   infrastructure. Our backgrounds cover frontend design, backend
                   systems, security tooling, and data processing.
                 </p>
-                <p className="text-base md:text-lg leading-relaxed">
+                <p className="text-base leading-relaxed md:text-lg">
                   Collectively, we&apos;ve built and maintained products ranging
                   from user-facing web apps to national-scale systems for
                   e-commerce and security.
@@ -73,13 +73,13 @@ export default function AboutPage() {
                 ].map(({ icon: Icon, label }) => (
                   <div
                     key={label}
-                    className="p-6 rounded-2xl border border-border/40 bg-card/30 backdrop-blur-sm group hover:border-primary/30 transition-colors"
+                    className="border-border/40 bg-card/30 group hover:border-primary/30 rounded-2xl border p-6 backdrop-blur-sm transition-colors"
                   >
                     <Icon
-                      className="w-8 h-8 mb-3 text-foreground/60 group-hover:text-foreground/80 transition-colors"
+                      className="text-foreground/60 group-hover:text-foreground/80 mb-3 h-8 w-8 transition-colors"
                       strokeWidth={1}
                     />
-                    <span className="text-sm text-muted-foreground">
+                    <span className="text-muted-foreground text-sm">
                       {label}
                     </span>
                   </div>
@@ -91,17 +91,17 @@ export default function AboutPage() {
       </section>
 
       {/* The Problem Section */}
-      <section className="py-24 md:py-32 relative overflow-hidden bg-gradient-to-b from-transparent via-destructive/[0.02] to-transparent">
+      <section className="via-destructive/[0.02] relative overflow-hidden bg-gradient-to-b from-transparent to-transparent py-24 md:py-32">
         {/* Watermark */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 watermark font-extralight text-foreground select-none">
+        <div className="watermark text-foreground absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-extralight select-none">
           WHY
         </div>
 
-        <div className="container mx-auto px-4 md:px-8 relative z-10">
-          <RevealOnScroll className="max-w-4xl mx-auto text-center mb-16 md:mb-24">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-extralight tracking-tight leading-tight">
+        <div className="relative z-10 container mx-auto px-4 md:px-8">
+          <RevealOnScroll className="mx-auto mb-16 max-w-4xl text-center md:mb-24">
+            <h2 className="text-3xl leading-tight font-extralight tracking-tight md:text-4xl lg:text-5xl xl:text-6xl">
               Technology no longer{" "}
-              <span className="italic font-light text-destructive/80">
+              <span className="text-destructive/80 font-light italic">
                 helps
               </span>{" "}
               humanity
@@ -113,8 +113,8 @@ export default function AboutPage() {
               animation="fade-up"
               className="col-span-12 md:col-span-6"
             >
-              <div className="p-8 rounded-2xl border border-border/40 bg-card/30 backdrop-blur-sm h-full">
-                <h3 className="text-xl md:text-2xl font-light mb-4">
+              <div className="border-border/40 bg-card/30 h-full rounded-2xl border p-8 backdrop-blur-sm">
+                <h3 className="mb-4 text-xl font-light md:text-2xl">
                   The Promise
                 </h3>
                 <p className="text-muted-foreground leading-relaxed">
@@ -131,8 +131,8 @@ export default function AboutPage() {
               delay={150}
               className="col-span-12 md:col-span-6"
             >
-              <div className="p-8 rounded-2xl border border-destructive/20 bg-destructive/[0.02] backdrop-blur-sm h-full">
-                <h3 className="text-xl md:text-2xl font-light mb-4">
+              <div className="border-destructive/20 bg-destructive/[0.02] h-full rounded-2xl border p-8 backdrop-blur-sm">
+                <h3 className="mb-4 text-xl font-light md:text-2xl">
                   The Reality
                 </h3>
                 <p className="text-muted-foreground leading-relaxed">
@@ -145,8 +145,12 @@ export default function AboutPage() {
             </RevealOnScroll>
           </div>
 
-          <RevealOnScroll animation="fade-up" delay={300} className="mt-12 md:mt-16">
-            <p className="text-center text-xl md:text-2xl font-light text-foreground/80 max-w-3xl mx-auto">
+          <RevealOnScroll
+            animation="fade-up"
+            delay={300}
+            className="mt-12 md:mt-16"
+          >
+            <p className="text-foreground/80 mx-auto max-w-3xl text-center text-xl font-light md:text-2xl">
               It&apos;s clear that technology alone is not enough. We need to
               bring back what we&apos;ve lost.{" "}
               <span className="italic">We need to bring back humanity.</span>
@@ -156,17 +160,17 @@ export default function AboutPage() {
       </section>
 
       {/* Our Approach Section */}
-      <section className="py-24 md:py-32 relative overflow-hidden">
+      <section className="relative overflow-hidden py-24 md:py-32">
         <div className="container mx-auto px-4 md:px-8">
-          <div className="grid grid-cols-12 gap-8 md:gap-16 items-center">
+          <div className="grid grid-cols-12 items-center gap-8 md:gap-16">
             <RevealOnScroll
               animation="fade-left"
               className="col-span-12 lg:col-span-5"
             >
-              <h2 className="text-3xl md:text-4xl lg:text-5xl font-extralight tracking-tight leading-tight">
+              <h2 className="text-3xl leading-tight font-extralight tracking-tight md:text-4xl lg:text-5xl">
                 Our approach
               </h2>
-              <div className="h-1 w-20 bg-gradient-to-r from-chart-2 to-chart-2/20 rounded-full mt-6" />
+              <div className="from-chart-2 to-chart-2/20 mt-6 h-1 w-20 rounded-full bg-gradient-to-r" />
             </RevealOnScroll>
 
             <RevealOnScroll
@@ -176,11 +180,11 @@ export default function AboutPage() {
             >
               <div className="space-y-8">
                 <div className="flex gap-6">
-                  <div className="flex-shrink-0 w-12 h-12 rounded-full border border-border/40 flex items-center justify-center text-lg font-light">
+                  <div className="border-border/40 flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full border text-lg font-light">
                     1
                   </div>
                   <div>
-                    <h3 className="text-xl font-light mb-2">Human-Centered</h3>
+                    <h3 className="mb-2 text-xl font-light">Human-Centered</h3>
                     <p className="text-muted-foreground leading-relaxed">
                       Starting with small projects where the human is the focus.
                       How they want to use it. How it affects their lives.
@@ -189,11 +193,11 @@ export default function AboutPage() {
                 </div>
 
                 <div className="flex gap-6">
-                  <div className="flex-shrink-0 w-12 h-12 rounded-full border border-border/40 flex items-center justify-center text-lg font-light">
+                  <div className="border-border/40 flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full border text-lg font-light">
                     2
                   </div>
                   <div>
-                    <h3 className="text-xl font-light mb-2">Mutual Value</h3>
+                    <h3 className="mb-2 text-xl font-light">Mutual Value</h3>
                     <p className="text-muted-foreground leading-relaxed">
                       Providing value under conditions that feel mutually
                       beneficial. Good old trade and barter. No dark patterns.
@@ -202,11 +206,11 @@ export default function AboutPage() {
                 </div>
 
                 <div className="flex gap-6">
-                  <div className="flex-shrink-0 w-12 h-12 rounded-full border border-border/40 flex items-center justify-center text-lg font-light">
+                  <div className="border-border/40 flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full border text-lg font-light">
                     3
                   </div>
                   <div>
-                    <h3 className="text-xl font-light mb-2">Collaboration</h3>
+                    <h3 className="mb-2 text-xl font-light">Collaboration</h3>
                     <p className="text-muted-foreground leading-relaxed">
                       Networking with other professionals to collaborate on
                       solutions. Building together, not in isolation.
@@ -220,19 +224,19 @@ export default function AboutPage() {
       </section>
 
       {/* Honesty Section */}
-      <section className="py-24 md:py-32 relative overflow-hidden">
+      <section className="relative overflow-hidden py-24 md:py-32">
         <div className="container mx-auto px-4 md:px-8">
-          <RevealOnScroll className="max-w-3xl mx-auto text-center">
-            <div className="p-8 md:p-12 rounded-3xl border border-border/40 bg-card/30 backdrop-blur-sm">
+          <RevealOnScroll className="mx-auto max-w-3xl text-center">
+            <div className="border-border/40 bg-card/30 rounded-3xl border p-8 backdrop-blur-sm md:p-12">
               <Users
-                className="w-12 h-12 mx-auto mb-6 text-foreground/60"
+                className="text-foreground/60 mx-auto mb-6 h-12 w-12"
                 strokeWidth={1}
               />
-              <p className="text-xl md:text-2xl font-light leading-relaxed text-foreground/80">
+              <p className="text-foreground/80 text-xl leading-relaxed font-light md:text-2xl">
                 &ldquo;Nothing is set in stone. We honestly don&apos;t know what
                 we are doing, but we want to try.&rdquo;
               </p>
-              <p className="mt-6 text-sm text-muted-foreground">
+              <p className="text-muted-foreground mt-6 text-sm">
                 — The QRK Team
               </p>
             </div>
@@ -241,17 +245,17 @@ export default function AboutPage() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 md:py-32 relative overflow-hidden cta-diagonal-bg">
+      <section className="cta-diagonal-bg relative overflow-hidden py-24 md:py-32">
         <div className="container mx-auto px-4 md:px-8">
-          <RevealOnScroll className="max-w-2xl mx-auto text-center space-y-8">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-extralight tracking-tight">
+          <RevealOnScroll className="mx-auto max-w-2xl space-y-8 text-center">
+            <h2 className="text-3xl font-extralight tracking-tight md:text-4xl lg:text-5xl">
               Want to build with us?
             </h2>
-            <p className="text-lg text-muted-foreground">
+            <p className="text-muted-foreground text-lg">
               We&apos;re always looking for collaborators who share our vision
               for human-centric technology.
             </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center pt-4">
+            <div className="flex flex-col justify-center gap-4 pt-4 sm:flex-row">
               <Button
                 size="lg"
                 className="cta-button-pulse px-8 py-6 text-base"
@@ -259,7 +263,7 @@ export default function AboutPage() {
               >
                 <Link href="mailto:hello@qrk.ng">
                   Get in Touch
-                  <ArrowRight className="w-4 h-4 ml-2" />
+                  <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>
               <Button
@@ -268,7 +272,7 @@ export default function AboutPage() {
                 className="px-8 py-6 text-base"
                 asChild
               >
-                <Link href="https://github.com/qrk-tech" target="_blank">
+                <Link href="https://github.com/qrk-labs" target="_blank">
                   View Our Work
                 </Link>
               </Button>

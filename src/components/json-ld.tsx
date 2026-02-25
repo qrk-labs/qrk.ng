@@ -21,7 +21,7 @@ export function OrganizationJsonLd({
     logo,
     description,
     sameAs: [
-      "https://github.com/qrk-tech",
+      "https://github.com/qrk-labs",
       "https://huggingface.co/qrk-labs",
       "https://linkedin.com/company/qrk-labs",
     ],
