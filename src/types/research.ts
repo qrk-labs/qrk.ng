@@ -7,6 +7,7 @@ export interface ResearchMetadata {
   status: "draft" | "preprint" | "published";
   pdf?: string;
   arxiv?: string;
+  published?: boolean;
 }
 
 export interface ResearchModule {

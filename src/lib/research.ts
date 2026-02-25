@@ -32,8 +32,13 @@ export async function getAllResearchPapers(): Promise<ResearchPaper[]> {
         };
       });
 
+    // Filter out unpublished papers (published defaults to true if not set)
+    const publishedPapers = allPapers.filter(
+      (paper) => paper.published !== false
+    );
+
     // Sort papers by date in descending order
-    return allPapers.sort((a, b) => {
+    return publishedPapers.sort((a, b) => {
       const dateA = new Date(a.publishedAt);
       const dateB = new Date(b.publishedAt);
       return dateB.getTime() - dateA.getTime();
@@ -69,11 +74,25 @@ export async function getResearchPaperSlugs(): Promise<string[]> {
     if (!fs.existsSync(researchDirectory)) {
       return [];
     }
-    
+
     const fileNames = fs.readdirSync(researchDirectory);
-    return fileNames
-      .filter((fileName) => fileName.endsWith(".mdx"))
-      .map((fileName) => fileName.replace(/\.mdx$/, ""));
+    const slugs: string[] = [];
+
+    for (const fileName of fileNames) {
+      if (!fileName.endsWith(".mdx")) continue;
+
+      const slug = fileName.replace(/\.mdx$/, "");
+      const fullPath = path.join(researchDirectory, fileName);
+      const fileContents = fs.readFileSync(fullPath, "utf8");
+      const { data } = matter(fileContents);
+
+      // Only include published papers (published defaults to true if not set)
+      if ((data as ResearchMetadata).published !== false) {
+        slugs.push(slug);
+      }
+    }
+
+    return slugs;
   } catch (error) {
     console.error("Error reading research paper slugs:", error);
     return [];

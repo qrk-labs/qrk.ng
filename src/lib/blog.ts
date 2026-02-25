@@ -34,8 +34,13 @@ export async function getAllBlogPosts(): Promise<BlogPost[]> {
         };
       });
 
+    // Filter out unpublished posts (published defaults to true if not set)
+    const publishedPosts = allPostsData.filter(
+      (post) => post.published !== false
+    );
+
     // Sort posts by date in descending order
-    return allPostsData.sort((a, b) => {
+    return publishedPosts.sort((a, b) => {
       const dateA = new Date(a.publishedAt);
       const dateB = new Date(b.publishedAt);
       return dateB.getTime() - dateA.getTime();
@@ -69,9 +74,23 @@ export async function getBlogPostMetadata(
 export async function getBlogPostSlugs(): Promise<string[]> {
   try {
     const fileNames = fs.readdirSync(blogDirectory);
-    return fileNames
-      .filter((fileName) => fileName.endsWith(".mdx"))
-      .map((fileName) => fileName.replace(/\.mdx$/, ""));
+    const slugs: string[] = [];
+
+    for (const fileName of fileNames) {
+      if (!fileName.endsWith(".mdx")) continue;
+
+      const slug = fileName.replace(/\.mdx$/, "");
+      const fullPath = path.join(blogDirectory, fileName);
+      const fileContents = fs.readFileSync(fullPath, "utf8");
+      const { data } = matter(fileContents);
+
+      // Only include published posts (published defaults to true if not set)
+      if ((data as BlogMetadata).published !== false) {
+        slugs.push(slug);
+      }
+    }
+
+    return slugs;
   } catch (error) {
     console.error("Error reading blog post slugs:", error);
     return [];

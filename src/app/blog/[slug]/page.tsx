@@ -66,7 +66,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const { slug } = await params;
   const metadata = await getBlogPostMetadata(slug);
 
-  if (!metadata) {
+  if (!metadata || metadata.published === false) {
     notFound();
   }
 

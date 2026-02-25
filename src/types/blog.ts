@@ -5,6 +5,7 @@ export interface BlogMetadata {
   description?: string;
   tags?: string[];
   image?: string;
+  published?: boolean;
 }
 
 export interface BlogModule {
