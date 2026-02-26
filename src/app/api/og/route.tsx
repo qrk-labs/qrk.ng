@@ -46,6 +46,7 @@ export async function GET(request: NextRequest) {
         {/* Large watermark text in background */}
         <div
           style={{
+            display: "flex",
             position: "absolute",
             top: "50%",
             left: "-5%",
@@ -67,8 +68,6 @@ export async function GET(request: NextRequest) {
             display: "flex",
             alignItems: "center",
             gap: "12px",
-            position: "relative",
-            zIndex: 10,
           }}
         >
           <div
@@ -82,11 +81,11 @@ export async function GET(request: NextRequest) {
               justifyContent: "center",
             }}
           >
-            <span style={{ color: "#fff", fontSize: "20px", fontWeight: 700 }}>
+            <span style={{ display: "flex", color: "#fff", fontSize: "20px", fontWeight: 700 }}>
               Q
             </span>
           </div>
-          <span style={{ color: "rgba(255, 255, 255, 0.5)", fontSize: "18px", fontWeight: 300 }}>
+          <span style={{ display: "flex", color: "rgba(255, 255, 255, 0.5)", fontSize: "18px", fontWeight: 300 }}>
             QRK Labs
           </span>
         </div>
@@ -99,12 +98,11 @@ export async function GET(request: NextRequest) {
             gap: "16px",
             flex: 1,
             justifyContent: "center",
-            position: "relative",
-            zIndex: 10,
           }}
         >
           <div
             style={{
+              display: "flex",
               color: "#fff",
               fontSize: title.length > 50 ? 44 : 56,
               fontWeight: 700,
@@ -118,6 +116,7 @@ export async function GET(request: NextRequest) {
           {author && type === "article" && (
             <div
               style={{
+                display: "flex",
                 color: "rgba(255, 255, 255, 0.4)",
                 fontSize: 22,
                 fontWeight: 300,
@@ -135,23 +134,22 @@ export async function GET(request: NextRequest) {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            position: "relative",
-            zIndex: 10,
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
             <div
               style={{
+                display: "flex",
                 width: "40px",
                 height: "1px",
                 background: "rgba(255, 255, 255, 0.2)",
               }}
             />
-            <span style={{ color: "rgba(255, 255, 255, 0.3)", fontSize: 16, fontWeight: 300 }}>
+            <span style={{ display: "flex", color: "rgba(255, 255, 255, 0.3)", fontSize: 16, fontWeight: 300 }}>
               Tech For Humanity
             </span>
           </div>
-          <span style={{ color: "rgba(255, 255, 255, 0.4)", fontSize: 16, fontWeight: 300 }}>
+          <span style={{ display: "flex", color: "rgba(255, 255, 255, 0.4)", fontSize: 16, fontWeight: 300 }}>
             qrk.ng
           </span>
         </div>
