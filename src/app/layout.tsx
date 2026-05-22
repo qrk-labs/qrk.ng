@@ -4,6 +4,7 @@ import "@/styles/globals.css";
 import { Header } from "@/components/header";
 import { PostHogProvider } from "@/components/PostHogProvider";
 import { OrganizationJsonLd, WebSiteJsonLd } from "@/components/json-ld";
+import SineBackground from "@/components/cursor-follow";
 
 export const metadata: Metadata = {
   title: {
@@ -89,6 +90,8 @@ export default function RootLayout({
         <PostHogProvider>
           <div id="root" className="h-full w-full">
             <ThemeProvider>
+              <SineBackground />
+              <div className="noise-overlay" />
               <Header
                 links={[
                   { label: "Home", href: "/" },

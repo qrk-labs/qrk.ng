@@ -8,9 +8,9 @@ import ContentFilter from "@/components/content-filter";
 
 function StatusBadge({ status }: { status: string }) {
   const colors = {
-    draft: "bg-yellow-500/10 text-yellow-500 border-yellow-500/20",
-    preprint: "bg-blue-500/10 text-blue-500 border-blue-500/20",
-    published: "bg-green-500/10 text-green-500 border-green-500/20",
+    draft: "bg-secondary/60 text-secondary-foreground border-border/60",
+    preprint: "bg-primary/10 text-primary border-primary/25",
+    published: "bg-chart-2/15 text-chart-2 border-chart-2/30",
   };
 
   return (

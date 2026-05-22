@@ -1,4 +1,3 @@
-import CursorFollow from "@/components/cursor-follow";
 import {
   HeroSection,
   MissionSection,
@@ -8,19 +7,11 @@ import {
 
 export default function HomePage() {
   return (
-    <>
-      <CursorFollow />
-
-      {/* Noise texture overlay for depth */}
-      <div className="noise-overlay" />
-
-      {/* Main content */}
-      <main>
-        <HeroSection />
-        <MissionSection />
-        <ValuesSection />
-        <CTASection />
-      </main>
-    </>
+    <main>
+      <HeroSection />
+      <MissionSection />
+      <ValuesSection />
+      <CTASection />
+    </main>
   );
 }
