@@ -1,60 +1,49 @@
 import { getAllBlogPosts } from "@/lib/blog";
 import BlogList from "@/components/blog-list";
-import { SplitText, FloatingShapes, RevealOnScroll } from "@/components/landing";
 import { PenLine } from "lucide-react";
 
 export default async function BlogPage() {
   const posts = await getAllBlogPosts();
 
   return (
-    <main>
-      {/* Hero Section */}
-      <section className="relative min-h-[60vh] flex items-center overflow-hidden pt-20">
-        <FloatingShapes />
+    <main className="relative overflow-hidden pt-24 pb-20">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 z-0 bg-gradient-to-b from-background/20 via-background/5 to-background/35"
+      />
 
-        <div className="container mx-auto px-4 md:px-8 relative z-10">
-          <div className="max-w-5xl">
-            <SplitText
-              text="BLOG"
-              className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl xl:text-[10rem] font-extralight tracking-tighter leading-[0.9]"
-              staggerDelay={0.05}
-              enableGlitch
-            />
-
-            <RevealOnScroll animation="fade-up" delay={300}>
-              <p className="mt-8 md:mt-12 text-xl md:text-2xl text-muted-foreground font-light max-w-2xl leading-relaxed">
-                Thoughts, insights, and experiences from the QRK team on
-                technology, security, and building a better digital future.
-              </p>
-            </RevealOnScroll>
-          </div>
-        </div>
+      <section className="relative z-10 mx-auto w-full max-w-5xl px-4 md:px-8">
+        <p className="text-xs font-medium tracking-[0.18em] text-muted-foreground uppercase">
+          Blog
+        </p>
+        <h1 className="mt-4 text-4xl leading-tight font-light tracking-tight md:text-6xl">
+          Notes from QRK
+        </h1>
+        <p className="mt-6 max-w-3xl text-lg leading-relaxed text-muted-foreground">
+          Thoughts, field notes, and technical writing from the QRK team.
+          Browse by topic, or jump straight into the latest post.
+        </p>
       </section>
 
-      {/* Blog Posts Section */}
-      <section className="py-16 md:py-24 relative">
-        <div className="container mx-auto px-4 md:px-8">
-          {posts.length === 0 ? (
-            <RevealOnScroll className="py-20">
-              <div className="max-w-2xl mx-auto text-center space-y-6">
-                <div className="w-20 h-20 mx-auto rounded-full border border-border/40 flex items-center justify-center">
-                  <PenLine
-                    className="w-8 h-8 text-muted-foreground/50"
-                    strokeWidth={1}
-                  />
-                </div>
-                <p className="text-2xl md:text-3xl font-light text-muted-foreground">
-                  No blog posts yet.
-                </p>
-                <p className="text-lg text-muted-foreground/70">
-                  We&apos;re working on something. Check back soon!
-                </p>
-              </div>
-            </RevealOnScroll>
-          ) : (
-            <BlogList posts={posts} />
-          )}
-        </div>
+      <section className="relative z-10 mx-auto mt-14 w-full max-w-6xl px-4 md:px-8">
+        {posts.length === 0 ? (
+          <div className="rounded-2xl border border-border/60 bg-card/30 px-6 py-14 text-center md:px-10">
+            <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border border-border/60">
+              <PenLine
+                className="h-6 w-6 text-muted-foreground/70"
+                strokeWidth={1.5}
+              />
+            </div>
+            <p className="mt-6 text-2xl font-light text-foreground">
+              No blog posts yet.
+            </p>
+            <p className="mt-3 text-base text-muted-foreground">
+              New writing will appear here soon.
+            </p>
+          </div>
+        ) : (
+          <BlogList posts={posts} />
+        )}
       </section>
     </main>
   );

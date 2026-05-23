@@ -3,85 +3,63 @@
 import Link from "next/link";
 import { ArrowRight, Calendar, User } from "lucide-react";
 import type { BlogPost } from "@/lib/blog";
-import { RevealOnScroll } from "@/components/landing";
 import ContentFilter from "@/components/content-filter";
 
-function BlogCard({
-  post,
-  index,
-  total,
-}: {
-  post: BlogPost;
-  index: number;
-  total: number;
-}) {
+function BlogCard({ post }: { post: BlogPost }) {
   return (
-    <RevealOnScroll
-      animation={index % 2 === 0 ? "fade-left" : "fade-right"}
-      delay={index * 100}
-    >
-      <article className="group">
-        <Link
-          href={`/blog/${post.slug}`}
-          className="block p-6 md:p-8 lg:p-10 rounded-2xl border border-border/40 bg-card/30 backdrop-blur-sm hover:border-primary/30 hover:bg-card/50 transition-all duration-300"
-        >
-          <div className="grid grid-cols-12 gap-6 md:gap-8">
-            {/* Number indicator */}
-            <div className="col-span-12 md:col-span-1">
-              <span className="text-6xl md:text-7xl font-extralight text-foreground/10 group-hover:text-primary/20 transition-colors">
-                {String(total - index).padStart(2, "0")}
+    <article>
+      <Link
+        href={`/blog/${post.slug}`}
+        className="group block overflow-hidden rounded-2xl border border-border/60 bg-card/20 transition-colors hover:border-primary/40"
+      >
+        <div className="border-b border-border/60 bg-muted/20 px-5 py-3 md:px-6">
+          <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+            <div className="inline-flex items-center gap-2">
+              <User className="h-4 w-4" strokeWidth={1.5} />
+              <span>{post.author}</span>
+            </div>
+            <div className="inline-flex items-center gap-2">
+              <Calendar className="h-4 w-4" strokeWidth={1.5} />
+              <span>
+                {new Date(post.publishedAt).toLocaleDateString("en-US", {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                })}
               </span>
             </div>
-
-            {/* Content */}
-            <div className="col-span-12 md:col-span-11 space-y-4">
-              <h2 className="text-2xl md:text-3xl lg:text-4xl font-light tracking-tight group-hover:text-primary transition-colors leading-tight">
-                {post.title}
-              </h2>
-
-              <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-                <div className="flex items-center gap-2">
-                  <User className="w-4 h-4" strokeWidth={1.5} />
-                  <span>{post.author}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4" strokeWidth={1.5} />
-                  <span>
-                    {new Date(post.publishedAt).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    })}
-                  </span>
-                </div>
-              </div>
-
-              {post.tags && post.tags.length > 0 && (
-                <div className="flex flex-wrap gap-2">
-                  {post.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className="text-xs px-2 py-1 rounded bg-secondary text-secondary-foreground"
-                    >
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              )}
-
-              <p className="text-base md:text-lg leading-relaxed text-muted-foreground line-clamp-2 max-w-3xl">
-                {post.excerpt}
-              </p>
-
-              <div className="flex items-center gap-2 text-primary font-light pt-2 group-hover:gap-4 transition-all">
-                <span>Read article</span>
-                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
-              </div>
-            </div>
           </div>
-        </Link>
-      </article>
-    </RevealOnScroll>
+        </div>
+
+        <div className="space-y-5 px-5 py-6 md:px-6 md:py-7">
+          <h2 className="text-2xl leading-tight font-light tracking-tight transition-colors group-hover:text-primary md:text-3xl">
+            {post.title}
+          </h2>
+
+          <p className="max-w-3xl text-base leading-relaxed text-muted-foreground md:text-lg">
+            {post.excerpt}
+          </p>
+
+          {post.tags && post.tags.length > 0 ? (
+            <div className="flex flex-wrap gap-2">
+              {post.tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="rounded-md border border-border/70 bg-background px-2.5 py-1 text-xs text-foreground/85"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          ) : null}
+
+          <div className="flex items-center gap-2 pt-1 text-sm font-medium text-primary transition-all group-hover:gap-3">
+            <span>Read article</span>
+            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+          </div>
+        </div>
+      </Link>
+    </article>
   );
 }
 
@@ -96,14 +74,9 @@ export default function BlogList({ posts }: { posts: BlogPost[] }) {
       placeholder="Search articles..."
     >
       {(filteredPosts) => (
-        <div className="space-y-8 md:space-y-12">
-          {filteredPosts.map((post, index) => (
-            <BlogCard
-              key={post.slug}
-              post={post}
-              index={index}
-              total={filteredPosts.length}
-            />
+        <div className="space-y-6 md:space-y-8">
+          {filteredPosts.map((post) => (
+            <BlogCard key={post.slug} post={post} />
           ))}
         </div>
       )}

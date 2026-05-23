@@ -91,7 +91,7 @@ export default function AboutPage() {
       </section>
 
       {/* The Problem Section */}
-      <section className="via-destructive/[0.02] relative overflow-hidden bg-gradient-to-b from-transparent to-transparent py-24 md:py-32">
+      <section className="relative overflow-hidden bg-gradient-to-b from-transparent via-primary/[0.04] to-transparent py-24 md:py-32">
         {/* Watermark */}
         <div className="watermark text-foreground absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-extralight select-none">
           WHY
@@ -101,7 +101,7 @@ export default function AboutPage() {
           <RevealOnScroll className="mx-auto mb-16 max-w-4xl text-center md:mb-24">
             <h2 className="text-3xl leading-tight font-extralight tracking-tight md:text-4xl lg:text-5xl xl:text-6xl">
               Technology no longer{" "}
-              <span className="text-destructive/80 font-light italic">
+              <span className="text-primary/90 font-light italic">
                 helps
               </span>{" "}
               humanity
@@ -131,7 +131,7 @@ export default function AboutPage() {
               delay={150}
               className="col-span-12 md:col-span-6"
             >
-              <div className="border-destructive/20 bg-destructive/[0.02] h-full rounded-2xl border p-8 backdrop-blur-sm">
+              <div className="border-primary/20 bg-primary/[0.05] h-full rounded-2xl border p-8 backdrop-blur-sm">
                 <h3 className="mb-4 text-xl font-light md:text-2xl">
                   The Reality
                 </h3>
