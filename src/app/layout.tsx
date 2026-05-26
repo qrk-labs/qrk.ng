@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
+import { Lexend } from "next/font/google";
 import { ThemeProvider } from "@/lib/theme";
 import "@/styles/globals.css";
 import { Header } from "@/components/header";
 import { PostHogProvider } from "@/components/PostHogProvider";
 import { OrganizationJsonLd, WebSiteJsonLd } from "@/components/json-ld";
 import SineBackground from "@/components/cursor-follow";
+
+const lexend = Lexend({ subsets: ["latin"], display: "swap" });
 
 export const metadata: Metadata = {
   title: {
@@ -75,14 +78,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" className={lexend.className}>
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Lexend:wght@100..900&display=swap"
-          rel="stylesheet"
-        />
         <OrganizationJsonLd />
         <WebSiteJsonLd />
       </head>
