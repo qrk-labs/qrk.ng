@@ -1,6 +1,10 @@
 import { getAllResearchPapers } from "@/lib/research";
 import ResearchList from "@/components/research-list";
-import { SplitText, FloatingShapes, RevealOnScroll } from "@/components/landing";
+import {
+  SplitText,
+  FloatingShapes,
+  RevealOnScroll,
+} from "@/components/landing";
 import { FlaskConical } from "lucide-react";
 
 export const metadata = {
@@ -15,22 +19,23 @@ export default async function ResearchPage() {
   return (
     <main>
       {/* Hero Section */}
-      <section className="relative min-h-[60vh] flex items-center overflow-hidden pt-20">
+      <section className="relative flex min-h-[60vh] items-center overflow-hidden pt-20">
         <FloatingShapes />
 
-        <div className="container mx-auto px-4 md:px-8 relative z-10">
+        <div className="relative z-10 container mx-auto px-4 md:px-8">
           <div className="max-w-5xl">
             <SplitText
               text="RESEARCH"
-              className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl xl:text-[10rem] font-extralight tracking-tighter leading-[0.9]"
+              className="text-6xl leading-[0.9] font-extralight tracking-tighter sm:text-7xl md:text-8xl lg:text-9xl xl:text-[10rem]"
               staggerDelay={0.05}
               enableGlitch
             />
 
             <RevealOnScroll animation="fade-up" delay={300}>
-              <p className="mt-8 md:mt-12 text-xl md:text-2xl text-muted-foreground font-light max-w-2xl leading-relaxed">
-                Technical papers, preprints, and research notes. Less polish,
-                more substance. These are working documents — expect updates.
+              <p className="text-muted-foreground mt-8 max-w-2xl text-xl leading-relaxed font-light md:mt-12 md:text-2xl">
+                Manuscripts, preprints, technical papers, and research notes.
+                Less polish, more substance. These are working documents —
+                expect updates.
               </p>
             </RevealOnScroll>
           </div>
@@ -38,21 +43,21 @@ export default async function ResearchPage() {
       </section>
 
       {/* Research Papers Section */}
-      <section className="py-16 md:py-24 relative">
+      <section className="relative py-16 md:py-24">
         <div className="container mx-auto px-4 md:px-8">
           {papers.length === 0 ? (
             <RevealOnScroll className="py-20">
-              <div className="max-w-2xl mx-auto text-center space-y-6">
-                <div className="w-20 h-20 mx-auto rounded-full border border-border/40 flex items-center justify-center">
+              <div className="mx-auto max-w-2xl space-y-6 text-center">
+                <div className="border-border/40 mx-auto flex h-20 w-20 items-center justify-center rounded-full border">
                   <FlaskConical
-                    className="w-8 h-8 text-muted-foreground/50"
+                    className="text-muted-foreground/50 h-8 w-8"
                     strokeWidth={1}
                   />
                 </div>
-                <p className="text-2xl md:text-3xl font-light text-muted-foreground">
+                <p className="text-muted-foreground text-2xl font-light md:text-3xl">
                   No research papers yet.
                 </p>
-                <p className="text-lg text-muted-foreground/70">
+                <p className="text-muted-foreground/70 text-lg">
                   We&apos;re working on something. Check back soon!
                 </p>
               </div>

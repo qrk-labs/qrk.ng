@@ -6,18 +6,25 @@ import type { ResearchPaper } from "@/lib/research";
 import { RevealOnScroll } from "@/components/landing";
 import ContentFilter from "@/components/content-filter";
 
-function StatusBadge({ status }: { status: string }) {
-  const colors = {
+type ResearchStatus = ResearchPaper["status"];
+
+function getDisplayStatus(status: ResearchStatus) {
+  return status === "draft" ? "manuscript" : status;
+}
+
+function StatusBadge({ status }: { status: ResearchStatus }) {
+  const colors: Record<ResearchStatus, string> = {
     draft: "bg-secondary/60 text-secondary-foreground border-border/60",
+    manuscript: "bg-secondary/60 text-secondary-foreground border-border/60",
     preprint: "bg-primary/10 text-primary border-primary/25",
     published: "bg-chart-2/15 text-chart-2 border-chart-2/30",
   };
 
   return (
     <span
-      className={`inline-flex items-center px-2.5 py-1 rounded text-xs font-medium border ${colors[status as keyof typeof colors] ?? colors.draft}`}
+      className={`inline-flex items-center rounded border px-2.5 py-1 text-xs font-medium ${colors[status]}`}
     >
-      {status}
+      {getDisplayStatus(status)}
     </span>
   );
 }
@@ -39,32 +46,32 @@ function ResearchCard({
       <article className="group">
         <Link
           href={`/research/${paper.slug}`}
-          className="block p-6 md:p-8 lg:p-10 rounded-2xl border border-border/40 bg-card/30 backdrop-blur-sm hover:border-primary/30 hover:bg-card/50 transition-all duration-300"
+          className="border-border/40 bg-card/30 hover:border-primary/30 hover:bg-card/50 block rounded-2xl border p-6 backdrop-blur-sm transition-all duration-300 md:p-8 lg:p-10"
         >
           <div className="grid grid-cols-12 gap-6 md:gap-8">
             {/* Number indicator */}
             <div className="col-span-12 md:col-span-1">
-              <span className="text-6xl md:text-7xl font-extralight text-foreground/10 group-hover:text-primary/20 transition-colors">
+              <span className="text-foreground/10 group-hover:text-primary/20 text-6xl font-extralight transition-colors md:text-7xl">
                 {String(total - index).padStart(2, "0")}
               </span>
             </div>
 
             {/* Content */}
-            <div className="col-span-12 md:col-span-11 space-y-4">
+            <div className="col-span-12 space-y-4 md:col-span-11">
               <div className="flex items-start justify-between gap-4">
-                <h2 className="text-2xl md:text-3xl lg:text-4xl font-light tracking-tight group-hover:text-primary transition-colors leading-tight">
+                <h2 className="group-hover:text-primary text-2xl leading-tight font-light tracking-tight transition-colors md:text-3xl lg:text-4xl">
                   {paper.title}
                 </h2>
                 <StatusBadge status={paper.status} />
               </div>
 
-              <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
+              <div className="text-muted-foreground flex flex-wrap items-center gap-4 text-sm">
                 <div className="flex items-center gap-2">
-                  <Users className="w-4 h-4" strokeWidth={1.5} />
+                  <Users className="h-4 w-4" strokeWidth={1.5} />
                   <span>{paper.authors.join(", ")}</span>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4" strokeWidth={1.5} />
+                  <Calendar className="h-4 w-4" strokeWidth={1.5} />
                   <span>
                     {new Date(paper.publishedAt).toLocaleDateString("en-US", {
                       year: "numeric",
@@ -74,7 +81,7 @@ function ResearchCard({
                 </div>
               </div>
 
-              <p className="text-base md:text-lg leading-relaxed text-muted-foreground line-clamp-3 max-w-3xl">
+              <p className="text-muted-foreground line-clamp-3 max-w-3xl text-base leading-relaxed md:text-lg">
                 {paper.abstract}
               </p>
 
@@ -83,7 +90,7 @@ function ResearchCard({
                   {paper.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="text-xs px-2 py-1 rounded bg-secondary text-secondary-foreground"
+                      className="bg-secondary text-secondary-foreground rounded px-2 py-1 text-xs"
                     >
                       {tag}
                     </span>
@@ -91,9 +98,9 @@ function ResearchCard({
                 </div>
               )}
 
-              <div className="flex items-center gap-2 text-primary font-light pt-2 group-hover:gap-4 transition-all">
+              <div className="text-primary flex items-center gap-2 pt-2 font-light transition-all group-hover:gap-4">
                 <span>Read paper</span>
-                <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-1" />
+                <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
               </div>
             </div>
           </div>

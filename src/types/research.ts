@@ -4,9 +4,11 @@ export interface ResearchMetadata {
   publishedAt: string;
   abstract: string;
   tags?: string[];
-  status: "draft" | "preprint" | "published";
+  status: "draft" | "manuscript" | "preprint" | "published";
   pdf?: string;
   arxiv?: string;
+  publicationUrl?: string;
+  publicationVenue?: string;
   published?: boolean;
 }
 
