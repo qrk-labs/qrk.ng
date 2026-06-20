@@ -1,0 +1,227 @@
+---
+title: "Density-Adaptive Bitmask Encoding"
+authors: ["Mainasara Al-amin Tsowa", "Babangida Usman Tsowa"]
+publishedAt: "2026-06-20"
+abstract: "DABE is a learned tokenizer-autoencoder that keeps text in fixed 64-token chunks, compresses each chunk into a coarse binary gist, and spends sparse lexical repair slots only where exact reconstruction is difficult. In our TinyStories experiments, this fixed-chunk-plus-repair design beats a matched 20 bits/token no-lookup baseline by a wide margin."
+tags:
+  [
+    "tokenization",
+    "compression",
+    "learned tokenizers",
+    "rate-distortion",
+    "DABE",
+  ]
+status: "preprint"
+pdf: "/research/density-adaptive-bitmask-encoding.pdf"
+published: true
+---
+
+## The Short Version
+
+Most tokenizers decide how text should be split before a model ever sees it. That works well enough for everyday language modeling, but it treats local detail pretty bluntly: a rare name, a punctuation-sensitive line of dialogue, and a predictable filler phrase all pass through the same fixed segmentation machinery.
+
+Density-Adaptive Bitmask Encoding, or DABE, asks a smaller and more testable question: if we treat tokenization like compression, can a learned tokenizer spend precision where a span actually needs it?
+
+The answer from this paper is yes, but with a twist. The useful adaptation did not come from changing the token window itself. It came from keeping a stable 64-token chunk and adding sparse lexical repair on top of a coarse chunk-level gist.
+
+## What DABE Is Doing
+
+DABE is a tokenizer-autoencoder. It takes a 64-token slab of GPT-2 token IDs, turns that slab into a binary code, and then tries to reconstruct the original 64 tokens.
+
+The architecture has two streams:
+
+- A **gist stream** that learns the broad shape of the chunk.
+- A **sparse repair stream** that gets a small budget of lookup slots for positions the gist is likely to miss.
+
+That distinction is the heart of the paper. The gist does the cheap, smooth, whole-span work. The repair path is reserved for lexical details: names, dialogue words, punctuation-sensitive fragments, scene-specific nouns, and other tokens where "close enough" is still wrong.
+
+In other words, DABE does not ask the model to memorize everything uniformly. It asks the model to reconstruct the easy parts cheaply and spend extra capacity on the holes.
+
+## Why Fixed Chunks Won
+
+The obvious adaptive-tokenizer idea is to let the token window change size. Easy text could be represented with wider windows, and difficult text could be represented with finer ones.
+
+We tested that family of ideas directly. It was attractive in theory, but brittle in practice. When the primary token-window geometry moved around, the decoder had to solve two problems at once: what content was present, and where that content lived in the changing coordinate system.
+
+DABE separates those jobs. The 64-token chunk stays fixed, so the decoder always reconstructs against the same coordinate frame. Only the repair budget moves.
+
+That made the mechanism easier to train and easier to inspect.
+
+## The Cleanest Result
+
+The central comparison is against a fixed-rate learned tokenizer with no lookup repair. This matters because it keeps the question honest: are we winning because DABE has more bits, or because it spends its bits in better places?
+
+| Setting                          | Observed bits/token | Token accuracy | Mean wrong tokens per 64-token chunk |
+| -------------------------------- | ------------------: | -------------: | -----------------------------------: |
+| EXP-093 fixed-rate no lookup     |            20.00000 |        0.72045 |                             17.89119 |
+| EXP-092 cost-aware sparse repair |            20.06207 |        0.89274 |                              6.86454 |
+
+That is the main result in one table. At essentially the same bitrate scale, sparse repair improves token accuracy by 0.17229 and cuts the average chunk error by 11.02665 tokens.
+
+<figure className="not-prose mx-auto my-10 flex w-full flex-col items-center">
+  <img
+    src="/research/dabe/fig01-matched-20bpt-comparator.png"
+    alt="Matched 20 bits per token comparator showing sparse repair improves token accuracy and mean chunk deviation over a no-lookup baseline"
+    className="border-border/50 mx-auto block w-full rounded-lg border bg-white p-2 shadow-sm"
+  />
+  <figcaption className="text-muted-foreground mx-auto mt-3 w-full text-center text-sm leading-relaxed">
+    Figure 1. At almost the same observed bitrate, sparse repair gets much
+    closer to the original chunk than the no-lookup learned compressor.
+  </figcaption>
+</figure>
+
+The fixed-rate baseline was not collapsed. It was a healthy learned compressor. It just spent its capacity uniformly, and uniform capacity was a poor substitute for selective lexical repair.
+
+## The Quality Anchor
+
+The best quality setting in the paper is EXP-087:
+
+| Setting                                  | Observed bits/token | Token accuracy | Mean wrong tokens per 64-token chunk |
+| ---------------------------------------- | ------------------: | -------------: | -----------------------------------: |
+| EXP-087 fixed chunk plus residual lookup |            20.37236 |        0.91547 |                              5.41007 |
+
+EXP-087 costs a little more than the 20 bits/token comparator, but it shows the upper end of the current design. The cost-aware sweep then finds a useful local knee around `lookup_slot_cost_weight=0.025`, where DABE keeps most of the quality while pruning unnecessary lookup slots.
+
+<figure className="not-prose mx-auto my-10 flex w-full flex-col items-center">
+  <img
+    src="/research/dabe/fig02-rate-distortion-frontier.png"
+    alt="Rate distortion frontier showing DABE points above fixed-rate baselines and variable-window ablations"
+    className="border-border/50 mx-auto block w-full rounded-lg border bg-white p-2 shadow-sm"
+  />
+  <figcaption className="text-muted-foreground mx-auto mt-3 w-full text-center text-sm leading-relaxed">
+    Figure 2. The rate-distortion frontier: DABE's fixed chunk plus sparse
+    repair points sit on the strongest current frontier.
+  </figcaption>
+</figure>
+
+## Where The Cost Knee Lands
+
+The cost-aware runs are useful because they show that the repair path can be squeezed without immediately destroying quality. Around `lookup_slot_cost_weight=0.025`, the model keeps the same accuracy neighborhood while using fewer active lookup slots than the lower-pressure setting.
+
+<figure className="not-prose mx-auto my-10 flex w-full flex-col items-center">
+  <img
+    src="/research/dabe/fig03-cost-knee-curve.png"
+    alt="Cost knee curve showing lookup slot cost weight 0.025 as a local knee for DABE"
+    className="border-border/50 mx-auto block w-full rounded-lg border bg-white p-2 shadow-sm"
+  />
+  <figcaption className="text-muted-foreground mx-auto mt-3 w-full text-center text-sm leading-relaxed">
+    Figure 3. The replicated local knee: lower cost spends more without buying
+    much quality, while higher cost prunes too aggressively.
+  </figcaption>
+</figure>
+
+The broader ablation says the same thing from another angle. Quality improves when the architecture learns to allocate repair slots selectively, not just when the maximum slot budget gets larger.
+
+<figure className="not-prose mx-auto my-10 flex w-full flex-col items-center">
+  <img
+    src="/research/dabe/fig04-adaptive-budget-ablation.png"
+    alt="Adaptive repair-budget ablation showing selective allocation recovers high lookup quality at lower observed bitrate"
+    className="border-border/50 mx-auto block w-full rounded-lg border bg-white p-2 shadow-sm"
+  />
+  <figcaption className="text-muted-foreground mx-auto mt-3 w-full text-center text-sm leading-relaxed">
+    Figure 4. The adaptive-budget path: routing and residual repair recover much
+    of the high-K quality without paying the full fixed-K cost.
+  </figcaption>
+</figure>
+
+<figure className="not-prose mx-auto my-10 flex w-full flex-col items-center">
+  <img
+    src="/research/dabe/fig06-active-k-vs-quality.png"
+    alt="Active lookup K versus mean chunk deviation showing router quality matters more than simply activating more slots"
+    className="border-border/50 mx-auto block w-full rounded-lg border bg-white p-2 shadow-sm"
+  />
+  <figcaption className="text-muted-foreground mx-auto mt-3 w-full text-center text-sm leading-relaxed">
+    Figure 6. More active lookup slots can help, but the best points are not
+    simply the largest active-K points. Router quality matters.
+  </figcaption>
+</figure>
+
+## What The Repair Path Looks Like
+
+One diagnostic chunk makes the behavior very concrete. The gist stream alone reconstructed only 62.5% of the tokens. It got the broad story shape, but it confused details like "sun", "sky", "cloud", and dialogue words with plausible alternatives.
+
+After sparse repair, the same chunk reached 98.4% token accuracy, with 23 positions corrected.
+
+<figure className="not-prose mx-auto my-10 flex w-full flex-col items-center">
+  <img
+    src="/research/dabe/fig07-sparse-repair-trace.png"
+    alt="Sparse repair trace showing target tokens, gist predictions, final repaired predictions, slot probabilities, and corrected positions"
+    className="border-border/50 mx-auto block w-full rounded-lg border bg-white p-2 shadow-sm"
+  />
+  <figcaption className="text-muted-foreground mx-auto mt-3 w-full text-center text-sm leading-relaxed">
+    Figure 7. A sparse repair trace from EXP-094 on the EXP-087 checkpoint. The
+    gist misses local scene and dialogue details; the repair stream restores
+    selected tokens.
+  </figcaption>
+</figure>
+
+Here is the reconstructed chunk in plain text:
+
+**Gist-only decode**
+
+> really toys. It was never a big, Sue,'s one. It are the hole and saw the new up. "Thank is little one, pictures?" Ben asked, feeling scared. "I are't know, , it is a new car. They it like a bad dragon!" And
+
+**Sparse-repair decode**
+
+> like nothing. It was just a big, white, cloud cloud. It covered the sun and made the sky darker. "What is that cloud, Anna?" Ben asked, feeling scared. "I don't know, Ben, it is a strange cloud. Maybe it is a monster cloud!" Anna
+
+**Target reference**
+
+> like nothing. It was just a big, white, fluffy cloud. It covered the sun and made the sky darker. "What is that cloud, Anna?" Ben asked, feeling scared. "I don't know, Ben, it is a strange cloud. Maybe it is a monster cloud!" Anna
+
+Some of the most readable individual repairs:
+
+| Position | Target  | Gist prediction | Final prediction |
+| -------: | ------- | --------------- | ---------------- |
+|       17 | sun     | hole            | sun              |
+|       21 | sky     | new             | sky              |
+|       27 | What    | Thank           | What             |
+|       30 | cloud   | one             | cloud            |
+|       53 | strange | new             | strange          |
+|       60 | monster | bad             | monster          |
+|       63 | Anna    | And             | Anna             |
+
+That is the intended interpretation of the repair stream. It is not just extra hidden capacity smeared across the whole sequence. It is a visible budget being spent on specific lexical misses.
+
+## What Did Not Work As Well
+
+The paper also tests variable-window alternatives:
+
+| Setting                                  | Observed bits/token | Token accuracy | Mean wrong tokens per 64-token chunk |
+| ---------------------------------------- | ------------------: | -------------: | -----------------------------------: |
+| EXP-088 quantile variable windows        |            19.46092 |        0.85820 |                              9.07550 |
+| EXP-089 action-value variable windows    |            18.29175 |        0.87508 |                              7.99482 |
+| EXP-090 hard straight-through windows    |            21.70567 |        0.87209 |                              8.18653 |
+| EXP-087 fixed chunk plus residual lookup |            20.37236 |        0.91547 |                              5.41007 |
+
+Variable windows can save bits, and some variants do reasonably well. But none of them beat the fixed-chunk sparse-repair anchor. The conclusion is not that adaptive granularity is useless. It is that, in this setup, the adaptation belongs in the repair budget before it belongs in the token-window geometry.
+
+<figure className="not-prose mx-auto my-10 flex w-full flex-col items-center">
+  <img
+    src="/research/dabe/fig05-variable-window-ablation.png"
+    alt="Variable-window ablation showing adaptive token-window geometry underperforms fixed chunks plus residual repair"
+    className="border-border/50 mx-auto block w-full rounded-lg border bg-white p-2 shadow-sm"
+  />
+  <figcaption className="text-muted-foreground mx-auto mt-3 w-full text-center text-sm leading-relaxed">
+    Figure 5. Variable-window ablations did not beat the fixed-chunk sparse
+    repair anchor.
+  </figcaption>
+</figure>
+
+## What This Is Not Claiming
+
+This is not yet a full language-model tokenizer replacement. The experiments are tokenizer-autoencoder experiments on TinyStories, using GPT-2 token IDs and exact reconstruction metrics.
+
+That framing is deliberate. It isolates the mechanism before adding the noise of full pretraining, downstream evaluation, larger corpora, optimizer schedules, and model-scale effects.
+
+DABE is also not a lossless compressor. Exact 64-token chunk reconstruction remains hard. The useful claim is rate-distortion: at a matched observed bitrate, fixed chunks plus sparse repair sharply reduce reconstruction distortion.
+
+## Why We Care
+
+Tokenization is usually treated as plumbing. DABE treats it as an allocation problem.
+
+That opens up a different design space. Instead of asking only "what vocabulary should we use?" we can ask "where should the tokenizer spend precision?" The answer from these experiments is surprisingly crisp: keep the chunk stable, learn a coarse gist, and route sparse lexical repair to the places where the gist is about to be wrong.
+
+The next work is to test the same mechanism on broader corpora, code, multilingual text, and eventually full language-model training. The repair trace tooling is especially useful there, because it lets us inspect whether lookup slots move toward the right kind of detail: identifiers and brackets in code, names and morphology in multilingual text, and citation-sensitive phrasing in technical prose.
+
+For now, the result is a compact mechanism claim: adaptive sparse repair over stable chunks gives a stronger learned-tokenizer frontier than uniform fixed-rate compression or adaptive token-window geometry at the same bitrate scale.
