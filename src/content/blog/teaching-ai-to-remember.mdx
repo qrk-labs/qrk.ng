@@ -1,0 +1,204 @@
+---
+title: "Teaching AI to remember before it speaks"
+author: "Mainasara Tsowa"
+publishedAt: "2026-06-20"
+description: "A plain-language story about DABE: why we are teaching models to remember the gist first, then spend effort filling in the details that matter."
+tags: ["AI", "tokenization", "DABE", "memory", "research"]
+published: true
+---
+
+Think about one of your oldest memories.
+
+Not the polished version you tell people now. The first version. The one that comes up before you start editing it.
+
+Maybe it is a birthday from childhood. Maybe it is your first day at school. Maybe it is a rainy afternoon at your grandmother's house.
+
+At first, you probably do not remember the whole thing perfectly. You remember the shape of it.
+
+You remember that the room was crowded. You remember there was food somewhere. You remember someone laughed. You remember being small. You remember the feeling before you remember the exact order of events.
+
+Then the details start arriving.
+
+The plastic chairs were blue. Your cousin was there. The rain was loud on the roof. Someone wore a white shirt. The cake had too much icing. You were standing near the door.
+
+Memory usually works like that. First the gist, then the repairs.
+
+That is the easiest way to understand the idea behind our new research paper, [Density-Adaptive Bitmask Encoding](/research/density-adaptive-bitmask-encoding).
+
+## The Machine Has A Memory Problem
+
+Language models are very good at producing language. But before they produce language, they need a way to represent it.
+
+That representation starts with tokenization.
+
+A tokenizer breaks text into small pieces so the model can work with it. Most modern tokenizers are practical and efficient, but they are also a little rigid. They split text using a fixed policy. They do not really stop and ask: "Which parts of this sentence are easy to remember, and which parts need careful attention?"
+
+That matters because text is uneven.
+
+Some words are predictable. If I say "once upon a", the next word is probably "time". You do not need to spend much effort remembering that.
+
+But other details are sharp. A person's name. A number. A quote. A place. A little word that changes the meaning of the whole sentence.
+
+Those details are the "white shirt" and "blue chairs" of language. If you miss them, the memory may still feel roughly right, but it is not actually correct.
+
+## A Model That Remembers The Gist First
+
+DABE is our attempt to make a tokenizer behave a bit more like memory.
+
+Instead of asking the model to preserve every part of a text chunk with the same level of effort, we give it two jobs.
+
+First, remember the gist.
+
+The model looks at a fixed 64-token chunk of text and compresses it into a compact binary code. You can think of this as the model saying:
+
+> "I know the rough scene. I know the kind of sentence this is. I know the rhythm. I know the general direction."
+
+That rough memory is useful. It carries a lot of the structure.
+
+But rough memory is not enough.
+
+So the second job is repair.
+
+After the model forms the gist, it gets a small budget for details. It can spend this budget on the places where the rough memory is likely to be wrong.
+
+Not everywhere. Just the hard parts.
+
+Names. Places. Dialogue. Objects. Words that are easy to blur. Tokens that the gist almost remembers, but not quite.
+
+The idea is simple: do not make the model memorize every tile in the floor. Let it remember the room first, then inspect the few tiles that actually matter.
+
+## Why We Keep The Chunk Still
+
+One tempting idea is to let the model change the size of what it remembers.
+
+Easy text? Use a bigger window.
+
+Hard text? Use a smaller window.
+
+That sounds natural. Humans zoom in and out all the time.
+
+But in our experiments, moving the window around made the job messier. The model now had to remember the content and also keep track of a shifting frame.
+
+It is like trying to remember a childhood room while the walls keep moving.
+
+DABE does something calmer. It keeps the 64-token chunk still. The model always knows where the memory lives. The only thing that changes is how much repair effort each part gets.
+
+That turned out to be a much stronger setup.
+
+Stable scene. Flexible attention.
+
+## The Difference In Plain English
+
+In the paper, we compare DABE against a model that gets a similar bit budget but no repair path.
+
+The no-repair model is like someone trying to remember everything with one blurry mental photo. It can see the general scene, but the details smear together.
+
+DABE is more like someone who first remembers the scene, then asks:
+
+> "Wait, who was standing there?"
+
+> "Was it sunny or raining?"
+
+> "What exactly did she say?"
+
+> "Was that a cloud, a car, or a monster in the story?"
+
+That second pass makes a big difference.
+
+At roughly the same bitrate, the fixed no-repair model reconstructed about 72% of tokens correctly. DABE reconstructed about 89%.
+
+More importantly, the average number of wrong tokens in each 64-token chunk dropped from about 18 to about 7.
+
+That is the whole story without the math: same general memory size, much better use of attention.
+
+## A Small Example
+
+One diagnostic example from the paper makes the system feel less abstract.
+
+The target text is a simple children's-story chunk about a cloud:
+
+> like nothing. It was just a big, white, fluffy cloud. It covered the sun and made the sky darker. "What is that cloud, Anna?" Ben asked, feeling scared. "I don't know, Ben, it is a strange cloud. Maybe it is a monster cloud!" Anna
+
+The gist-only version gets the vibe, but it stumbles badly:
+
+> really toys. It was never a big, Sue,'s one. It are the hole and saw the new up. "Thank is little one, pictures?" Ben asked, feeling scared. "I are't know, , it is a new car. They it like a bad dragon!" And
+
+You can almost feel the model squinting.
+
+It knows there is a story. It knows there is dialogue. It knows Ben is scared. But it loses the sharp pieces. "sun" becomes "hole". "sky" becomes "new". "What" becomes "Thank". "cloud" becomes "car". "monster" becomes "bad".
+
+Then sparse repair steps in:
+
+> like nothing. It was just a big, white, cloud cloud. It covered the sun and made the sky darker. "What is that cloud, Anna?" Ben asked, feeling scared. "I don't know, Ben, it is a strange cloud. Maybe it is a monster cloud!" Anna
+
+Still not perfect. It says "cloud cloud" instead of "fluffy cloud".
+
+But the scene snaps back into place.
+
+The model repairs the important details: sun, sky, cloud, What, Anna, monster. It stops sounding like a dream and starts sounding like the original story again.
+
+That is the behavior we care about.
+
+## Why This Matters
+
+A lot of AI work is about making models bigger. Bigger models remember more because they have more capacity.
+
+That is useful, but it is not the only path.
+
+We are interested in models that spend their capacity more intelligently.
+
+The human version of this is obvious. You do not remember every second of your childhood equally. You remember the outline, then your mind fills in the important details. Some details deserve sharpness. Others can stay fuzzy.
+
+DABE brings that instinct into tokenization.
+
+It treats text as something with texture. Some spans are easy. Some spans are dense. Some tokens carry more responsibility than others.
+
+The model should not spend the same effort everywhere.
+
+## What We Are Trying To Replicate
+
+The deeper idea is not "compression is cool", even though compression is cool.
+
+The deeper idea is that intelligence often works in layers.
+
+You do not understand a story by memorizing the exact ink pattern on the page. You form a model of what happened. Then, when details matter, you retrieve them or reconstruct them.
+
+You remember:
+
+- the event before the timestamp
+- the place before the wall color
+- the person before the shirt
+- the feeling before the exact sentence
+
+Then you fill in.
+
+DABE is a small technical step toward that kind of representation. It gives the model a rough memory first, then a controlled way to say:
+
+> "This part needs more care."
+
+That is the part I find exciting.
+
+Not because the model is suddenly human. It is not.
+
+But because the architecture starts to rhyme with something human: the movement from gist to detail, from sketch to repair, from "I remember what happened" to "now let me recover the exact pieces."
+
+## Where This Goes Next
+
+Right now, DABE is a tokenizer-autoencoder experiment. That means we are testing whether the mechanism works in a controlled reconstruction setting before plugging it into full language-model training.
+
+The next questions are practical:
+
+- Does this help on broader text, not just TinyStories?
+- Does it work for code, where brackets and names are tiny but important?
+- Does it help multilingual text, where morphology and spelling details matter a lot?
+- Can a language model trained with this kind of representation become more efficient?
+
+We do not know all of that yet.
+
+What we do know is that the first signal is strong: stable chunks plus selective repair beat uniform memory at the same bitrate scale.
+
+That is a useful clue.
+
+Maybe the future of tokenization is not just better vocabularies or bigger context windows.
+
+Maybe it is models learning what to remember clearly, what to remember roughly, and when to go back for the missing details.
