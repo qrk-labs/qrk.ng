@@ -34,90 +34,58 @@ function StatusBadge({ status }: { status: ResearchStatus }) {
   );
 }
 
-function ResearchStage({ meta }: { meta: ResearchMetadata }) {
-  const normalizedStatus = getDisplayStatus(meta.status);
+function StatusPath({ meta }: { meta: ResearchMetadata }) {
+  const currentStatus = getDisplayStatus(meta.status);
   const stages = [
-    {
-      key: "manuscript",
-      label: "Manuscript",
-      description: "Working draft",
-      href: undefined,
-    },
-    {
-      key: "preprint",
-      label: "Preprint",
-      description: "Public preprint",
-      href: undefined,
-    },
+    { key: "manuscript", label: "Manuscript", href: undefined },
+    { key: "preprint", label: "Preprint", href: undefined },
     {
       key: "published",
       label: meta.publicationVenue ?? "Published",
-      description: meta.publicationUrl ? "Publication link" : "Peer-reviewed",
       href: meta.publicationUrl,
     },
   ] as const;
-  const activeIndex = stages.findIndex(
-    (stage) => stage.key === normalizedStatus,
-  );
 
   return (
-    <div className="border-border/40 bg-card/40 rounded-2xl border p-4 md:p-5">
-      <h2 className="text-muted-foreground mb-4 text-sm font-semibold tracking-wide uppercase">
-        Paper Status
-      </h2>
-      <div className="grid gap-3 md:grid-cols-3">
-        {stages.map((stage, index) => {
-          const isActive = index === activeIndex;
-          const isComplete = activeIndex > index;
-          const isUpcoming = activeIndex < index;
-          const content = (
-            <>
-              <span
-                className={`flex h-7 w-7 shrink-0 items-center justify-center rounded-full border text-xs font-medium ${
-                  isActive || isComplete
-                    ? "border-primary/40 bg-primary/10 text-primary"
-                    : "border-border/70 bg-secondary/30 text-muted-foreground"
-                }`}
+    <div className="text-muted-foreground mt-4 flex flex-wrap items-center gap-2 text-xs tracking-wide uppercase">
+      <span className="mr-1">Status path</span>
+      {stages.map((stage, index) => {
+        const isCurrent = stage.key === currentStatus;
+        const label = (
+          <span
+            className={
+              isCurrent
+                ? "text-foreground font-medium"
+                : "text-muted-foreground/70"
+            }
+          >
+            {stage.label}
+          </span>
+        );
+
+        return (
+          <span key={stage.key} className="inline-flex items-center gap-2">
+            {stage.href ? (
+              <a
+                href={stage.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-foreground inline-flex items-center gap-1 transition-colors"
               >
-                {index + 1}
+                {label}
+                <ExternalLink className="h-3 w-3" />
+              </a>
+            ) : (
+              label
+            )}
+            {index < stages.length - 1 ? (
+              <span aria-hidden className="text-muted-foreground/45">
+                -&gt;
               </span>
-              <span className="min-w-0">
-                <span className="flex items-center gap-1.5 font-medium">
-                  {stage.label}
-                  {stage.href ? <ExternalLink className="h-3.5 w-3.5" /> : null}
-                </span>
-                <span className="text-muted-foreground mt-0.5 block text-xs">
-                  {isActive ? "Current stage" : stage.description}
-                </span>
-              </span>
-            </>
-          );
-
-          const className = `flex items-start gap-3 rounded-lg border px-3 py-3 text-left text-sm transition-colors ${
-            isActive
-              ? "border-primary/35 bg-primary/10 text-foreground"
-              : isComplete
-                ? "border-primary/20 bg-primary/5 text-foreground/85"
-                : "border-border/50 bg-secondary/20 text-muted-foreground"
-          } ${isUpcoming ? "opacity-70" : ""}`;
-
-          return stage.href ? (
-            <a
-              key={stage.key}
-              href={stage.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              className={`${className} hover:border-primary/35 hover:text-foreground`}
-            >
-              {content}
-            </a>
-          ) : (
-            <div key={stage.key} className={className}>
-              {content}
-            </div>
-          );
-        })}
-      </div>
+            ) : null}
+          </span>
+        );
+      })}
     </div>
   );
 }
@@ -213,6 +181,7 @@ export default async function ResearchPost({
                 </span>
               </div>
             </div>
+            <StatusPath meta={meta} />
           </RevealOnScroll>
 
           <RevealOnScroll animation="fade-up" delay={250}>
@@ -223,50 +192,43 @@ export default async function ResearchPost({
 
       {/* Abstract */}
       <div className="container mx-auto -mt-8 mb-12 px-4 md:px-8">
-        <RevealOnScroll animation="fade-up" delay={300}>
-          <div className="mx-auto max-w-3xl space-y-6">
-            <ResearchStage meta={meta} />
-            <div className="bg-card/50 border-border/40 rounded-2xl border p-6 backdrop-blur-sm md:p-8">
-              <h2 className="text-muted-foreground mb-3 text-sm font-semibold tracking-wide uppercase">
-                Abstract
-              </h2>
-              <p className="text-foreground/90 text-lg leading-relaxed">
-                {meta.abstract}
-              </p>
-            </div>
+        <div className="mx-auto max-w-3xl">
+          <div className="bg-card/50 border-border/40 rounded-2xl border p-6 backdrop-blur-sm md:p-8">
+            <h2 className="text-muted-foreground mb-3 text-sm font-semibold tracking-wide uppercase">
+              Abstract
+            </h2>
+            <p className="text-foreground/90 text-lg leading-relaxed">
+              {meta.abstract}
+            </p>
           </div>
-        </RevealOnScroll>
+        </div>
       </div>
 
       {/* Tags */}
       {meta.tags && meta.tags.length > 0 && (
         <div className="container mx-auto mb-12 px-4 md:px-8">
-          <RevealOnScroll animation="fade-up" delay={350}>
-            <div className="mx-auto max-w-3xl">
-              <div className="flex flex-wrap gap-2">
-                {meta.tags.map((tag) => (
-                  <span
-                    key={tag}
-                    className="bg-secondary text-secondary-foreground rounded-lg px-3 py-1.5 text-sm"
-                  >
-                    {tag}
-                  </span>
-                ))}
-              </div>
+          <div className="mx-auto max-w-3xl">
+            <div className="flex flex-wrap gap-2">
+              {meta.tags.map((tag) => (
+                <span
+                  key={tag}
+                  className="bg-secondary text-secondary-foreground rounded-lg px-3 py-1.5 text-sm"
+                >
+                  {tag}
+                </span>
+              ))}
             </div>
-          </RevealOnScroll>
+          </div>
         </div>
       )}
 
       {/* Content */}
       <div className="container mx-auto px-4 pb-16 md:px-8">
-        <RevealOnScroll animation="fade-up" delay={400}>
-          <div className="mx-auto max-w-3xl">
-            <div className="blog-content prose prose-lg dark:prose-invert prose-headings:font-light prose-headings:tracking-tight prose-h2:text-2xl prose-h2:md:text-3xl prose-h2:mb-6 prose-h3:text-xl prose-h3:md:text-2xl prose-h3:mt-8 prose-h3:mb-4 prose-p:text-lg prose-p:leading-[1.8] prose-p:text-foreground/80 prose-p:mb-6 prose-pre:bg-muted prose-pre:border prose-pre:border-border/40 max-w-none">
-              {children}
-            </div>
+        <div className="mx-auto max-w-3xl">
+          <div className="blog-content prose prose-lg dark:prose-invert prose-headings:font-light prose-headings:tracking-tight prose-h2:text-2xl prose-h2:md:text-3xl prose-h2:mb-6 prose-h3:text-xl prose-h3:md:text-2xl prose-h3:mt-8 prose-h3:mb-4 prose-p:text-lg prose-p:leading-[1.8] prose-p:text-foreground/80 prose-p:mb-6 prose-pre:bg-muted prose-pre:border prose-pre:border-border/40 max-w-none">
+            {children}
           </div>
-        </RevealOnScroll>
+        </div>
 
         {/* Citation */}
         <RevealOnScroll animation="fade-up" className="mt-16 md:mt-24">
