@@ -5,6 +5,8 @@ export interface ResearchMetadata {
   abstract: string;
   tags?: string[];
   status: "draft" | "manuscript" | "preprint" | "published";
+  ogImage?: string;
+  image?: string;
   pdf?: string;
   arxiv?: string;
   publicationUrl?: string;

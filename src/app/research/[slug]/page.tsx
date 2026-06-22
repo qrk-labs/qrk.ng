@@ -1,5 +1,8 @@
 import { notFound } from "next/navigation";
-import { getResearchPaperSlugs, getResearchPaperMetadata } from "@/lib/research";
+import {
+  getResearchPaperSlugs,
+  getResearchPaperMetadata,
+} from "@/lib/research";
 import ResearchPost from "@/components/research-post";
 import { ArticleJsonLd } from "@/components/json-ld";
 import type { ResearchModule } from "@/types/research";
@@ -27,7 +30,10 @@ export async function generateMetadata({ params }: ResearchPaperPageProps) {
     };
   }
 
-  const ogImage = `/api/og?title=${encodeURIComponent(metadata.title)}&author=${encodeURIComponent(metadata.authors[0] ?? "QRK Labs")}&type=research`;
+  const ogImage =
+    metadata.ogImage ??
+    metadata.image ??
+    `/api/og?title=${encodeURIComponent(metadata.title)}&author=${encodeURIComponent(metadata.authors[0] ?? "QRK Labs")}&type=research`;
 
   return {
     title: metadata.title,
@@ -77,7 +83,10 @@ export default async function ResearchPaperPage({
       notFound();
     }
 
-    const ogImage = `/api/og?title=${encodeURIComponent(metadata.title)}&author=${encodeURIComponent(metadata.authors[0] ?? "QRK Labs")}&type=research`;
+    const ogImage =
+      metadata.ogImage ??
+      metadata.image ??
+      `/api/og?title=${encodeURIComponent(metadata.title)}&author=${encodeURIComponent(metadata.authors[0] ?? "QRK Labs")}&type=research`;
 
     return (
       <main>

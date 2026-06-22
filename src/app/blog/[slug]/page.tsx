@@ -28,11 +28,12 @@ export async function generateMetadata({ params }: BlogPostPageProps) {
   }
 
   const description =
-    metadata.description ??
-    `${metadata.title} by ${metadata.author}`;
+    metadata.description ?? `${metadata.title} by ${metadata.author}`;
 
-  // Use custom image if provided, otherwise use dynamic OG route
-  const ogImage = metadata.image ?? `/api/og?title=${encodeURIComponent(metadata.title)}&author=${encodeURIComponent(metadata.author)}`;
+  const ogImage =
+    metadata.ogImage ??
+    metadata.image ??
+    `/api/og?title=${encodeURIComponent(metadata.title)}&author=${encodeURIComponent(metadata.author)}`;
 
   return {
     title: metadata.title,
@@ -83,6 +84,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
     const description =
       metadata.description ?? `${metadata.title} by ${metadata.author}`;
     const ogImage =
+      metadata.ogImage ??
       metadata.image ??
       `/api/og?title=${encodeURIComponent(metadata.title)}&author=${encodeURIComponent(metadata.author)}`;
 

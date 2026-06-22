@@ -5,6 +5,7 @@ publishedAt: "2026-02-23"
 abstract: "We present technical implementation details for thought injection, a method for augmenting language model generation with on-demand knowledge retrieval. This document covers the training data generation pipeline, inference architecture, and preliminary evaluation results on knowledge-intensive QA tasks."
 tags: ["LLM", "RAG", "retrieval", "reasoning", "synthetic data"]
 status: "preprint"
+ogImage: "/og/research/thought-injection-technical-notes.png"
 published: false
 ---
 
@@ -88,6 +89,7 @@ Standard QA benchmarks don't capture what we're measuring. We developed evaluati
 #### 1. Hallucination Rate
 
 We manually annotate model responses for factual accuracy, categorizing errors as:
+
 - **Hard hallucinations** — Completely fabricated facts
 - **Soft hallucinations** — Partially correct but misleading information
 - **Omissions** — Missing important caveats or context
@@ -95,6 +97,7 @@ We manually annotate model responses for factual accuracy, categorizing errors a
 #### 2. Retrieval Relevance
 
 For each knowledge query emitted:
+
 - Human annotators rate relevance of retrieved documents (1-5)
 - We measure whether the retrieved context contains the answer
 - We track false positive rate (unnecessary retrievals)
@@ -109,12 +112,12 @@ For each knowledge query emitted:
 
 Testing on a held-out set of 500 knowledge-intensive questions:
 
-| Metric | Baseline | Standard RAG | Thought Injection |
-|--------|----------|--------------|-------------------|
-| Hard hallucination rate | 32% | 19% | 12% |
-| Soft hallucination rate | 15% | 12% | 12% |
-| Retrieval relevance (1-5) | N/A | 3.2 | 3.9 |
-| Queries per response | N/A | 1.0 (fixed) | 1.4 (dynamic) |
+| Metric                    | Baseline | Standard RAG | Thought Injection |
+| ------------------------- | -------- | ------------ | ----------------- |
+| Hard hallucination rate   | 32%      | 19%          | 12%               |
+| Soft hallucination rate   | 15%      | 12%          | 12%               |
+| Retrieval relevance (1-5) | N/A      | 3.2          | 3.9               |
+| Queries per response      | N/A      | 1.0 (fixed)  | 1.4 (dynamic)     |
 
 The improvement in hard hallucination rate is the primary result. Soft hallucination rates are similar because they often stem from reasoning errors rather than missing knowledge.
 
