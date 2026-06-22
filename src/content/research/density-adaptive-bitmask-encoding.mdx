@@ -1,8 +1,8 @@
 ---
 title: "Density-Adaptive Bitmask Encoding"
 authors: ["Mainasara Al-amin Tsowa", "Babangida Usman Tsowa"]
-publishedAt: "2026-06-20"
-abstract: "DABE is a learned tokenizer-autoencoder that keeps text in fixed 64-token chunks, compresses each chunk into a coarse binary gist, and spends sparse lexical repair slots only where exact reconstruction is difficult. In our TinyStories experiments, this fixed-chunk-plus-repair design beats a matched 20 bits/token no-lookup baseline by a wide margin."
+publishedAt: "2026-06-22"
+abstract: "DABE is a learned tokenizer-autoencoder that keeps text in fixed 64-token chunks, compresses each chunk into a coarse binary gist, and spends sparse lexical repair slots only where exact reconstruction is difficult. The latest manuscript adds a longer fixed-rate convergence check, bitrate calibration, decode-profile accounting, and a code-domain control while preserving the core fixed-chunk-plus-repair result."
 tags:
   [
     "tokenization",
@@ -23,6 +23,17 @@ Most tokenizers decide how text should be split before a model ever sees it. Tha
 Density-Adaptive Bitmask Encoding, or DABE, asks a smaller and more testable question: if we treat tokenization like compression, can a learned tokenizer spend precision where a span actually needs it?
 
 The answer from this paper is yes, but with a twist. The useful adaptation did not come from changing the token window itself. It came from keeping a stable 64-token chunk and adding sparse lexical repair on top of a coarse chunk-level gist.
+
+## What Changed In This Draft
+
+The June 22 manuscript is a tighter version of the paper. It adds four useful controls:
+
+- A longer fixed-rate no-lookup run, EXP-095, to check whether the original baseline was simply undertrained.
+- A bitrate calibration table, to make clear that these are learned GPT-2-token reconstruction rates, not claims about beating raw text compression.
+- A matched decode-profile comparison, showing the throughput and memory cost of sparse repair.
+- A code-domain control, separating "this tokenizer has not seen code" from "this mechanism cannot represent code."
+
+The headline is unchanged: fixed chunks plus sparse repair still beat uniform fixed-rate reconstruction at the same bitrate scale.
 
 ## What DABE Is Doing
 
@@ -54,23 +65,26 @@ The central comparison is against a fixed-rate learned tokenizer with no lookup 
 | Setting                          | Observed bits/token | Token accuracy | Mean wrong tokens per 64-token chunk |
 | -------------------------------- | ------------------: | -------------: | -----------------------------------: |
 | EXP-093 fixed-rate no lookup     |            20.00000 |        0.72045 |                             17.89119 |
+| EXP-095 longer fixed-rate run    |            20.00000 |        0.77324 |                             14.51295 |
 | EXP-092 cost-aware sparse repair |            20.06207 |        0.89274 |                              6.86454 |
 
-That is the main result in one table. At essentially the same bitrate scale, sparse repair improves token accuracy by 0.17229 and cuts the average chunk error by 11.02665 tokens.
+That is the main result in one table. At the original matched horizon, sparse repair improves token accuracy by 0.17229 and cuts the average chunk error by 11.02665 tokens.
+
+The new EXP-095 run gives the fixed-rate baseline more room to converge. It improves materially, from 0.72045 to 0.77324 token accuracy, but it still remains far behind DABE's 0.89274. Mean chunk deviation also stays much worse: 14.51295 wrong tokens per 64-token chunk versus 6.86454 for cost-aware sparse repair.
 
 <figure className="not-prose mx-auto my-10 flex w-full flex-col items-center">
   <img
     src="/research/dabe/fig01-matched-20bpt-comparator.png"
-    alt="Matched 20 bits per token comparator showing sparse repair improves token accuracy and mean chunk deviation over a no-lookup baseline"
+    alt="Matched 20 bits per token comparator showing sparse repair improves token accuracy and mean chunk deviation over the original no-lookup baseline"
     className="border-border/50 mx-auto block w-full rounded-lg border bg-white p-2 shadow-sm"
   />
   <figcaption className="text-muted-foreground mx-auto mt-3 w-full text-center text-sm leading-relaxed">
-    Figure 1. At almost the same observed bitrate, sparse repair gets much
-    closer to the original chunk than the no-lookup learned compressor.
+    Figure 1. At the original matched horizon, sparse repair gets much closer to
+    the original chunk than the no-lookup learned compressor.
   </figcaption>
 </figure>
 
-The fixed-rate baseline was not collapsed. It was a healthy learned compressor. It just spent its capacity uniformly, and uniform capacity was a poor substitute for selective lexical repair.
+The fixed-rate baseline was not collapsed. It was a healthy learned compressor. The longer EXP-095 check makes that point stronger: more fixed-rate training helps, but uniform capacity remains a poor substitute for selective lexical repair.
 
 ## The Quality Anchor
 
@@ -81,6 +95,14 @@ The best quality setting in the paper is EXP-087:
 | EXP-087 fixed chunk plus residual lookup |            20.37236 |        0.91547 |                              5.41007 |
 
 EXP-087 costs a little more than the 20 bits/token comparator, but it shows the upper end of the current design. The cost-aware sweep then finds a useful local knee around `lookup_slot_cost_weight=0.025`, where DABE keeps most of the quality while pruning unnecessary lookup slots.
+
+## Bitrate Calibration
+
+This manuscript is careful about what "bits/token" means here.
+
+The reference information cost for a raw GPT-2 vocabulary index is about `log2(50257) = 15.62` bits/token. The DABE fixed-rate baseline uses 20.0 bits/token, and the sparse repair settings sit around 20.06-20.37 observed bits/token after charging for active lookup slots.
+
+That means the paper is not claiming raw-text compression superiority over BPE. It is studying learned GPT-2-token-ID reconstruction under comparable observed bitrate. That distinction matters, because the current target is mechanism clarity, not deployment-ready lossless compression.
 
 <figure className="not-prose mx-auto my-10 flex w-full flex-col items-center">
   <img
@@ -136,6 +158,19 @@ The broader ablation says the same thing from another angle. Quality improves wh
   </figcaption>
 </figure>
 
+## What The Extra Accuracy Costs
+
+Sparse repair is not free.
+
+The updated manuscript adds matched decode-profile numbers for the fixed-rate and sparse-repair paths:
+
+| Setting                       | Decode throughput | Peak allocated memory |
+| ----------------------------- | ----------------: | --------------------: |
+| EXP-096 fixed-rate profile    |   32,930 tokens/s |            852.80 MiB |
+| EXP-094 sparse-repair profile |   13,461 tokens/s |           2031.74 MiB |
+
+So the sparse-repair path is about 2.45x slower and uses about 2.38x more peak allocated memory in this T4 diagnostic. That is the trade: much lower reconstruction distortion in exchange for more routing and lookup work.
+
 ## What The Repair Path Looks Like
 
 One diagnostic chunk makes the behavior very concrete. The gist stream alone reconstructed only 62.5% of the tokens. It got the broad story shape, but it confused details like "sun", "sky", "cloud", and dialogue words with plausible alternatives.
@@ -183,6 +218,23 @@ Some of the most readable individual repairs:
 
 That is the intended interpretation of the repair stream. It is not just extra hidden capacity smeared across the whole sequence. It is a visible budget being spent on specific lexical misses.
 
+## The Code-Domain Check
+
+The new draft also adds an important code-domain control.
+
+First, the EXP-087 TinyStories-trained checkpoint is tested zero-shot on deterministic Python-like code. It struggles: token accuracy drops to 0.41761, mean chunk deviation rises to 37.27273, and active lookup usage rises to 16.0. That is a useful failure. The model recognizes that code is hard and spends repair budget, but its TinyStories-trained lexical repair content is not calibrated for identifiers, indentation, brackets, and operators.
+
+Then the paper runs the complementary control: train on the deterministic code generator. In that in-domain setting, the DABE LM reaches 0.98964 next-token completion accuracy versus 0.98012 for the GPT-2 BPE baseline. The code-trained sparse-repair tokenizer reaches 1.0 token accuracy, 1.0 exact chunk accuracy, and 0.0 mean chunk deviation at 16.20189 observed bits/token.
+
+The right takeaway is narrow but encouraging: the failed zero-shot code result is a domain-exposure issue, not obvious evidence that the mechanism cannot represent code. The current code generator is still small and repetitive, so broader real-code evaluation remains future work.
+
+| Context                        | DABE completion          | GPT-2 BPE completion |
+| ------------------------------ | ------------------------ | -------------------- |
+| `def add_user(users,`          | ` name):`                | ` add`               |
+| `def add_user(users, name): _` | ` users.append({'name':` | ` (`                 |
+
+The learned tokenizer is predicting larger code-local units, while BPE stays closer to subword pieces.
+
 ## What Did Not Work As Well
 
 The paper also tests variable-window alternatives:
@@ -210,11 +262,13 @@ Variable windows can save bits, and some variants do reasonably well. But none o
 
 ## What This Is Not Claiming
 
-This is not yet a full language-model tokenizer replacement. The experiments are tokenizer-autoencoder experiments on TinyStories, using GPT-2 token IDs and exact reconstruction metrics.
+This is not yet a full language-model tokenizer replacement. The main experiments are tokenizer-autoencoder experiments on TinyStories, using GPT-2 token IDs and exact reconstruction metrics.
 
 That framing is deliberate. It isolates the mechanism before adding the noise of full pretraining, downstream evaluation, larger corpora, optimizer schedules, and model-scale effects.
 
 DABE is also not a lossless compressor. Exact 64-token chunk reconstruction remains hard. The useful claim is rate-distortion: at a matched observed bitrate, fixed chunks plus sparse repair sharply reduce reconstruction distortion.
+
+The code-domain control is also intentionally narrow. It shows that code-domain training can make the learned span tokenizer behave sensibly on a deterministic code generator, but it does not claim broad performance on real repositories yet.
 
 ## Why We Care
 
@@ -222,6 +276,6 @@ Tokenization is usually treated as plumbing. DABE treats it as an allocation pro
 
 That opens up a different design space. Instead of asking only "what vocabulary should we use?" we can ask "where should the tokenizer spend precision?" The answer from these experiments is surprisingly crisp: keep the chunk stable, learn a coarse gist, and route sparse lexical repair to the places where the gist is about to be wrong.
 
-The next work is to test the same mechanism on broader corpora, code, multilingual text, and eventually full language-model training. The repair trace tooling is especially useful there, because it lets us inspect whether lookup slots move toward the right kind of detail: identifiers and brackets in code, names and morphology in multilingual text, and citation-sensitive phrasing in technical prose.
+The next work is to test the same mechanism on broader corpora, real code repositories, multilingual text, and eventually full language-model training. The repair trace tooling is especially useful there, because it lets us inspect whether lookup slots move toward the right kind of detail: identifiers and brackets in code, names and morphology in multilingual text, and citation-sensitive phrasing in technical prose.
 
-For now, the result is a compact mechanism claim: adaptive sparse repair over stable chunks gives a stronger learned-tokenizer frontier than uniform fixed-rate compression or adaptive token-window geometry at the same bitrate scale.
+For now, the result is a compact mechanism claim with stronger controls: adaptive sparse repair over stable chunks gives a stronger learned-tokenizer frontier than uniform fixed-rate compression or adaptive token-window geometry at the same bitrate scale, even after giving the fixed-rate baseline a longer convergence-defense run.
