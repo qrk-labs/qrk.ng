@@ -8,16 +8,43 @@ interface CitationProps {
   title: string;
   authors: string[];
   year: number;
+  publicationUrl?: string;
+  publicationVenue?: string;
 }
 
-export default function Citation({ slug, title, authors, year }: CitationProps) {
-  const [copied, setCopied] = useState(false);
+function getDoi(publicationUrl?: string) {
+  if (!publicationUrl) return undefined;
 
-  const citationText = `@article{qrk_${slug.replace(/-/g, "_")}_${year},
+  const doiMatch = /doi\.org\/(.+)$/.exec(publicationUrl);
+  return doiMatch?.[1];
+}
+
+export default function Citation({
+  slug,
+  title,
+  authors,
+  year,
+  publicationUrl,
+  publicationVenue,
+}: CitationProps) {
+  const [copied, setCopied] = useState(false);
+  const doi = getDoi(publicationUrl);
+  const url = publicationUrl ?? `https://qrk.ng/research/${slug}`;
+
+  const citationText = doi
+    ? `@misc{qrk_${slug.replace(/-/g, "_")}_${year},
   title={${title}},
   author={${authors.join(" and ")}},
   year={${year}},
-  url={https://qrk.ng/research/${slug}}
+  publisher={${publicationVenue ?? "Zenodo"}},
+  doi={${doi}},
+  url={${url}}
+}`
+    : `@article{qrk_${slug.replace(/-/g, "_")}_${year},
+  title={${title}},
+  author={${authors.join(" and ")}},
+  year={${year}},
+  url={${url}}
 }`;
 
   const handleCopy = async () => {
@@ -31,30 +58,30 @@ export default function Citation({ slug, title, authors, year }: CitationProps) 
   };
 
   return (
-    <div className="relative group">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-sm font-semibold uppercase tracking-wide text-muted-foreground">
+    <div className="group relative">
+      <div className="mb-4 flex items-center justify-between">
+        <h2 className="text-muted-foreground text-sm font-semibold tracking-wide uppercase">
           Cite this paper
         </h2>
         <button
           onClick={handleCopy}
-          className="inline-flex items-center gap-2 px-3 py-1.5 text-sm rounded-lg border border-border/50 bg-secondary/30 hover:bg-secondary/50 hover:border-primary/30 transition-all duration-200"
+          className="border-border/50 bg-secondary/30 hover:bg-secondary/50 hover:border-primary/30 inline-flex items-center gap-2 rounded-lg border px-3 py-1.5 text-sm transition-all duration-200"
           aria-label={copied ? "Copied!" : "Copy citation"}
         >
           {copied ? (
             <>
-              <Check className="w-4 h-4 text-green-500" />
+              <Check className="h-4 w-4 text-green-500" />
               <span className="text-green-500">Copied!</span>
             </>
           ) : (
             <>
-              <Copy className="w-4 h-4" />
+              <Copy className="h-4 w-4" />
               <span>Copy</span>
             </>
           )}
         </button>
       </div>
-      <pre className="text-sm bg-secondary/50 rounded-lg p-4 overflow-x-auto border border-border/30">
+      <pre className="bg-secondary/50 border-border/30 overflow-x-auto rounded-lg border p-4 text-sm">
         <code>{citationText}</code>
       </pre>
     </div>

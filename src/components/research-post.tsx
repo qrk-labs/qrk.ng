@@ -38,11 +38,21 @@ function StatusPath({ meta }: { meta: ResearchMetadata }) {
   const currentStatus = getDisplayStatus(meta.status);
   const stages = [
     { key: "manuscript", label: "Manuscript", href: undefined },
-    { key: "preprint", label: "Preprint", href: undefined },
+    {
+      key: "preprint",
+      label:
+        meta.status === "preprint" && meta.publicationVenue
+          ? meta.publicationVenue
+          : "Preprint",
+      href: meta.status === "preprint" ? meta.publicationUrl : undefined,
+    },
     {
       key: "published",
-      label: meta.publicationVenue ?? "Published",
-      href: meta.publicationUrl,
+      label:
+        meta.status === "published" && meta.publicationVenue
+          ? meta.publicationVenue
+          : "Published",
+      href: meta.status === "published" ? meta.publicationUrl : undefined,
     },
   ] as const;
 
@@ -152,7 +162,7 @@ export default async function ResearchPost({
                   rel="noopener noreferrer"
                 >
                   <ExternalLink className="h-4 w-4" />
-                  Published
+                  {meta.publicationVenue ?? "Published"}
                 </a>
               )}
             </div>
@@ -239,6 +249,8 @@ export default async function ResearchPost({
               title={meta.title}
               authors={meta.authors}
               year={year}
+              publicationUrl={meta.publicationUrl}
+              publicationVenue={meta.publicationVenue}
             />
           </div>
         </RevealOnScroll>
