@@ -1,5 +1,14 @@
 import type { MDXComponents } from "mdx/types";
 import Image from "next/image";
+import {
+  ResponsiveTable,
+  TableBody,
+  TableCaption,
+  TableCell,
+  TableHead,
+  TableHeaderCell,
+  TableRow,
+} from "@/components/mdx-table";
 
 export function useMDXComponents(components: MDXComponents): MDXComponents {
   return {
@@ -36,6 +45,13 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     ul: ({ children }) => <ul className="list-disc pl-4">{children}</ul>,
     ol: ({ children }) => <ol className="list-decimal pl-4">{children}</ol>,
     li: ({ children }) => <li className="py-1 font-light">{children}</li>,
+    table: ResponsiveTable,
+    thead: TableHead,
+    tbody: TableBody,
+    tr: TableRow,
+    th: TableHeaderCell,
+    td: TableCell,
+    caption: TableCaption,
     img: ({ src, alt }: { src: string; alt: string }) => (
       <div>
         <hr />

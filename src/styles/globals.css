@@ -707,7 +707,7 @@
     }
 
     /* Tables */
-    & table {
+    & table:not(.responsive-content-table) {
       width: 100%;
       border-collapse: collapse;
       margin: 2rem 0;
@@ -717,11 +717,11 @@
       border: 1px solid hsl(var(--border));
     }
 
-    & thead {
+    & table:not(.responsive-content-table) thead {
       background: hsl(var(--muted) / 0.5);
     }
 
-    & th {
+    & table:not(.responsive-content-table) th {
       padding: 0.875rem 1rem;
       text-align: left;
       font-weight: 500;
@@ -729,17 +729,17 @@
       border-bottom: 1px solid hsl(var(--border));
     }
 
-    & td {
+    & table:not(.responsive-content-table) td {
       padding: 0.875rem 1rem;
       border-bottom: 1px solid hsl(var(--border) / 0.5);
       color: hsl(var(--foreground) / 0.8);
     }
 
-    & tbody tr:last-child td {
+    & table:not(.responsive-content-table) tbody tr:last-child td {
       border-bottom: none;
     }
 
-    & tbody tr:hover {
+    & table:not(.responsive-content-table) tbody tr:hover {
       background: hsl(var(--muted) / 0.3);
     }
 
@@ -823,7 +823,8 @@
     }
 
     & pre,
-    & table,
+    & table:not(.responsive-content-table),
+    & .responsive-table,
     & img {
       margin: 1.5rem 0;
     }
