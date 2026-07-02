@@ -55,7 +55,7 @@ export default function ContentFilter<T>({
 
   const toggleTag = (tag: string) => {
     setSelectedTags((prev) =>
-      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag],
     );
   };
 
@@ -72,20 +72,20 @@ export default function ContentFilter<T>({
       <div className="space-y-4">
         {/* Search Input */}
         <div className="relative max-w-md">
-          <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+          <Search className="text-muted-foreground absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={placeholder}
-            className="w-full pl-12 pr-4 py-3 rounded-xl border border-border/50 bg-card/30 backdrop-blur-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary/50 focus:ring-2 focus:ring-primary/20 transition-all"
+            className="border-border/70 bg-card/55 text-foreground placeholder:text-muted-foreground focus:border-primary/50 focus:ring-primary/20 w-full border py-3 pr-4 pl-12 transition-all focus:ring-2 focus:outline-none"
           />
           {searchQuery && (
             <button
               onClick={() => setSearchQuery("")}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+              className="text-muted-foreground hover:text-foreground absolute top-1/2 right-4 -translate-y-1/2 transition-colors"
             >
-              <X className="w-4 h-4" />
+              <X className="h-4 w-4" />
             </button>
           )}
         </div>
@@ -97,7 +97,7 @@ export default function ContentFilter<T>({
               <button
                 key={tag}
                 onClick={() => toggleTag(tag)}
-                className={`px-3 py-1.5 text-sm rounded-lg border transition-all ${
+                className={`border px-3 py-1.5 text-sm transition-all ${
                   selectedTags.includes(tag)
                     ? "bg-primary text-primary-foreground border-primary"
                     : "bg-secondary/50 text-secondary-foreground border-border/50 hover:border-primary/30 hover:bg-secondary"
@@ -111,7 +111,7 @@ export default function ContentFilter<T>({
 
         {/* Active Filters Summary */}
         {hasActiveFilters && (
-          <div className="flex items-center gap-3 text-sm text-muted-foreground">
+          <div className="text-muted-foreground flex items-center gap-3 text-sm">
             <span>
               Showing {filteredItems.length} of {items.length} results
             </span>
@@ -128,7 +128,7 @@ export default function ContentFilter<T>({
       {/* Filtered Content */}
       {filteredItems.length === 0 ? (
         <div className="py-16 text-center">
-          <p className="text-xl text-muted-foreground mb-2">No results found</p>
+          <p className="text-muted-foreground mb-2 text-xl">No results found</p>
           <p className="text-muted-foreground/70">
             Try adjusting your search or filters
           </p>

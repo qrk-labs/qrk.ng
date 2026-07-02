@@ -203,7 +203,7 @@ export default async function ResearchPost({
       {/* Abstract */}
       <div className="container mx-auto -mt-8 mb-12 px-4 md:px-8">
         <div className="mx-auto max-w-3xl">
-          <div className="bg-card/50 border-border/40 rounded-2xl border p-6 backdrop-blur-sm md:p-8">
+          <div className="border-border/70 bg-card/55 border p-6 md:p-8">
             <h2 className="text-muted-foreground mb-3 text-sm font-semibold tracking-wide uppercase">
               Abstract
             </h2>
@@ -222,7 +222,7 @@ export default async function ResearchPost({
               {meta.tags.map((tag) => (
                 <span
                   key={tag}
-                  className="bg-secondary text-secondary-foreground rounded-lg px-3 py-1.5 text-sm"
+                  className="border-border/70 bg-secondary/70 text-secondary-foreground border px-3 py-1.5 text-sm"
                 >
                   {tag}
                 </span>

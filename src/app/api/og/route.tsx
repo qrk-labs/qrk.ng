@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
   return new ImageResponse(
     <div
       style={{
-        background: "#0a0a0a",
+        background: "rgb(8, 16, 38)",
         width: "100%",
         height: "100%",
         display: "flex",
@@ -165,7 +165,7 @@ export async function GET(request: NextRequest) {
           <span
             style={{
               display: "flex",
-              color: "#fff",
+              color: "rgb(238, 247, 255)",
               fontSize: "20px",
               fontWeight: 700,
             }}
@@ -199,7 +199,7 @@ export async function GET(request: NextRequest) {
         <div
           style={{
             display: "flex",
-            color: "#fff",
+            color: "rgb(238, 247, 255)",
             fontSize: title.length > 50 ? 44 : 56,
             fontWeight: 700,
             lineHeight: 1.15,
@@ -250,7 +250,7 @@ export async function GET(request: NextRequest) {
               fontWeight: 300,
             }}
           >
-            Tech For Humanity
+            AI research notes
           </span>
         </div>
         <span

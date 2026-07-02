@@ -1,4 +1,4 @@
-import { Code, Shield, Database, Cpu, Users, ArrowRight } from "lucide-react";
+import { Code, Database, Cpu, Users, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
@@ -17,7 +17,7 @@ export default function AboutPage() {
         <div className="relative z-10 container mx-auto px-4 md:px-8">
           <div className="max-w-5xl">
             <SplitText
-              text="WHO ARE WE?"
+              text="ABOUT QRK"
               className="text-5xl leading-[0.9] font-extralight tracking-tighter sm:text-6xl md:text-7xl lg:text-8xl xl:text-9xl"
               staggerDelay={0.04}
               enableGlitch
@@ -25,8 +25,9 @@ export default function AboutPage() {
 
             <RevealOnScroll animation="fade-up" delay={400}>
               <p className="text-muted-foreground mt-8 max-w-2xl text-xl leading-relaxed font-light md:mt-12 md:text-2xl">
-                A technology research lab from Abuja, Nigeria, building software
-                that puts humans first.
+                An AI research lab from Abuja, Nigeria, working on learned
+                tokenization, retrieval during reasoning, and model
+                representation.
               </p>
             </RevealOnScroll>
           </div>
@@ -42,19 +43,18 @@ export default function AboutPage() {
               className="col-span-12 lg:col-span-6"
             >
               <h2 className="mb-8 text-3xl leading-tight font-extralight tracking-tight md:text-4xl lg:text-5xl">
-                A small team of{" "}
-                <span className="font-light italic">engineers</span>
+                A small team working on{" "}
+                <span className="font-light">language model research</span>
               </h2>
               <div className="text-muted-foreground space-y-6">
                 <p className="text-base leading-relaxed md:text-lg">
-                  We work across web development, cybersecurity, and software
-                  infrastructure. Our backgrounds cover frontend design, backend
-                  systems, security tooling, and data processing.
+                  We work across machine learning, NLP, data engineering, and
+                  software infrastructure. Our current public work is focused on
+                  representation, retrieval, and tokenization.
                 </p>
                 <p className="text-base leading-relaxed md:text-lg">
-                  Collectively, we&apos;ve built and maintained products ranging
-                  from user-facing web apps to national-scale systems for
-                  e-commerce and security.
+                  The archive includes DABE, a tokenizer-autoencoder manuscript,
+                  plus writing about model memory and retrieval.
                 </p>
               </div>
             </RevealOnScroll>
@@ -66,14 +66,14 @@ export default function AboutPage() {
             >
               <div className="grid grid-cols-2 gap-4">
                 {[
-                  { icon: Code, label: "React & TypeScript" },
-                  { icon: Shield, label: "Security Systems" },
-                  { icon: Database, label: "Data Pipelines" },
-                  { icon: Cpu, label: "Rust & Go" },
+                  { icon: Code, label: "Model Research" },
+                  { icon: Database, label: "DABE & Tokenization" },
+                  { icon: Cpu, label: "Retrieval Notes" },
+                  { icon: Users, label: "Research Writing" },
                 ].map(({ icon: Icon, label }) => (
                   <div
                     key={label}
-                    className="border-border/40 bg-card/30 group hover:border-primary/30 rounded-2xl border p-6 backdrop-blur-sm transition-colors"
+                    className="group border-border/70 bg-card/55 hover:border-primary/40 hover:bg-card/75 border p-6 transition-colors"
                   >
                     <Icon
                       className="text-foreground/60 group-hover:text-foreground/80 mb-3 h-8 w-8 transition-colors"
@@ -91,7 +91,7 @@ export default function AboutPage() {
       </section>
 
       {/* The Problem Section */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-transparent via-primary/[0.04] to-transparent py-24 md:py-32">
+      <section className="via-primary/[0.04] relative overflow-hidden bg-gradient-to-b from-transparent to-transparent py-24 md:py-32">
         {/* Watermark */}
         <div className="watermark text-foreground absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 font-extralight select-none">
           WHY
@@ -100,11 +100,7 @@ export default function AboutPage() {
         <div className="relative z-10 container mx-auto px-4 md:px-8">
           <RevealOnScroll className="mx-auto mb-16 max-w-4xl text-center md:mb-24">
             <h2 className="text-3xl leading-tight font-extralight tracking-tight md:text-4xl lg:text-5xl xl:text-6xl">
-              Technology no longer{" "}
-              <span className="text-primary/90 font-light italic">
-                helps
-              </span>{" "}
-              humanity
+              We like small questions with sharp edges.
             </h2>
           </RevealOnScroll>
 
@@ -113,15 +109,13 @@ export default function AboutPage() {
               animation="fade-up"
               className="col-span-12 md:col-span-6"
             >
-              <div className="border-border/40 bg-card/30 h-full rounded-2xl border p-8 backdrop-blur-sm">
+              <div className="border-border/70 bg-card/55 h-full border p-8">
                 <h3 className="mb-4 text-xl font-light md:text-2xl">
-                  The Promise
+                  The question
                 </h3>
                 <p className="text-muted-foreground leading-relaxed">
-                  Social media enabled connecting with people across the world.
-                  AI and automation have the potential to ease the lives of
-                  many. Technology promised great leaps in our standard of
-                  living.
+                  How should a model remember detail without treating every
+                  token as equally important?
                 </p>
               </div>
             </RevealOnScroll>
@@ -131,15 +125,13 @@ export default function AboutPage() {
               delay={150}
               className="col-span-12 md:col-span-6"
             >
-              <div className="border-primary/20 bg-primary/[0.05] h-full rounded-2xl border p-8 backdrop-blur-sm">
+              <div className="border-primary/30 bg-primary/[0.07] h-full border p-8">
                 <h3 className="mb-4 text-xl font-light md:text-2xl">
-                  The Reality
+                  The habit
                 </h3>
                 <p className="text-muted-foreground leading-relaxed">
-                  Endless tracking and surveillance. Misinformation at scale.
-                  Misleading AI-generated content. Algorithms optimizing for
-                  engagement over wellbeing. Technology creating new risks that
-                  threaten our communities.
+                  Start with the mechanism, test it in a controlled setting,
+                  write down what happened, then widen the question.
                 </p>
               </div>
             </RevealOnScroll>
@@ -151,9 +143,8 @@ export default function AboutPage() {
             className="mt-12 md:mt-16"
           >
             <p className="text-foreground/80 mx-auto max-w-3xl text-center text-xl font-light md:text-2xl">
-              It&apos;s clear that technology alone is not enough. We need to
-              bring back what we&apos;ve lost.{" "}
-              <span className="italic">We need to bring back humanity.</span>
+              That is the shape of the work: patient experiments, public notes,
+              and enough detail for other people to follow the thread.
             </p>
           </RevealOnScroll>
         </div>
@@ -180,40 +171,45 @@ export default function AboutPage() {
             >
               <div className="space-y-8">
                 <div className="flex gap-6">
-                  <div className="border-border/40 flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full border text-lg font-light">
+                  <div className="border-border/70 flex h-12 w-12 flex-shrink-0 items-center justify-center border text-lg font-light">
                     1
                   </div>
                   <div>
-                    <h3 className="mb-2 text-xl font-light">Human-Centered</h3>
+                    <h3 className="mb-2 text-xl font-light">
+                      Study Mechanisms
+                    </h3>
                     <p className="text-muted-foreground leading-relaxed">
-                      Starting with small projects where the human is the focus.
-                      How they want to use it. How it affects their lives.
+                      Focus on small parts of model behavior that can be
+                      described, tested, and improved.
                     </p>
                   </div>
                 </div>
 
                 <div className="flex gap-6">
-                  <div className="border-border/40 flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full border text-lg font-light">
+                  <div className="border-border/70 flex h-12 w-12 flex-shrink-0 items-center justify-center border text-lg font-light">
                     2
                   </div>
                   <div>
-                    <h3 className="mb-2 text-xl font-light">Mutual Value</h3>
+                    <h3 className="mb-2 text-xl font-light">Write Clearly</h3>
                     <p className="text-muted-foreground leading-relaxed">
-                      Providing value under conditions that feel mutually
-                      beneficial. Good old trade and barter. No dark patterns.
+                      Pair technical work with explanations that make the idea
+                      easier to inspect.
                     </p>
                   </div>
                 </div>
 
                 <div className="flex gap-6">
-                  <div className="border-border/40 flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full border text-lg font-light">
+                  <div className="border-border/70 flex h-12 w-12 flex-shrink-0 items-center justify-center border text-lg font-light">
                     3
                   </div>
                   <div>
-                    <h3 className="mb-2 text-xl font-light">Collaboration</h3>
+                    <h3 className="mb-2 text-xl font-light">
+                      Build From Abuja
+                    </h3>
                     <p className="text-muted-foreground leading-relaxed">
-                      Networking with other professionals to collaborate on
-                      solutions. Building together, not in isolation.
+                      Add a different vantage point to the research
+                      conversation, shaped by where we work and who we work
+                      around.
                     </p>
                   </div>
                 </div>
@@ -223,22 +219,20 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Honesty Section */}
+      {/* Values Section */}
       <section className="relative overflow-hidden py-24 md:py-32">
         <div className="container mx-auto px-4 md:px-8">
           <RevealOnScroll className="mx-auto max-w-3xl text-center">
-            <div className="border-border/40 bg-card/30 rounded-3xl border p-8 backdrop-blur-sm md:p-12">
+            <div className="border-border/70 bg-card/55 border p-8 md:p-12">
               <Users
                 className="text-foreground/60 mx-auto mb-6 h-12 w-12"
                 strokeWidth={1}
               />
               <p className="text-foreground/80 text-xl leading-relaxed font-light md:text-2xl">
-                &ldquo;Nothing is set in stone. We honestly don&apos;t know what
-                we are doing, but we want to try.&rdquo;
+                &ldquo;We study mechanisms that are small enough to isolate and
+                significant enough to matter.&rdquo;
               </p>
-              <p className="text-muted-foreground mt-6 text-sm">
-                — The QRK Team
-              </p>
+              <p className="text-muted-foreground mt-6 text-sm">The QRK Team</p>
             </div>
           </RevealOnScroll>
         </div>
@@ -249,11 +243,11 @@ export default function AboutPage() {
         <div className="container mx-auto px-4 md:px-8">
           <RevealOnScroll className="mx-auto max-w-2xl space-y-8 text-center">
             <h2 className="text-3xl font-extralight tracking-tight md:text-4xl lg:text-5xl">
-              Want to build with us?
+              Reach out
             </h2>
             <p className="text-muted-foreground text-lg">
-              We&apos;re always looking for collaborators who share our vision
-              for human-centric technology.
+              If the research overlaps with something you are studying or
+              building, send us a note.
             </p>
             <div className="flex flex-col justify-center gap-4 pt-4 sm:flex-row">
               <Button
@@ -262,7 +256,7 @@ export default function AboutPage() {
                 asChild
               >
                 <Link href="mailto:hello@qrk.ng">
-                  Get in Touch
+                  Send a message
                   <ArrowRight className="ml-2 h-4 w-4" />
                 </Link>
               </Button>

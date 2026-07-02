@@ -26,35 +26,36 @@ export function Header({
   const [light, dark] = logoPair();
 
   return (
-    <header
-      className="fixed top-0 right-0 left-0 z-50 border-b border-border/40 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60"
-    >
-      <div className="container mx-auto flex items-center justify-between px-4 py-4 md:px-8">
+    <header className="border-border/70 bg-background/[0.88] supports-[backdrop-filter]:bg-background/[0.72] fixed top-0 right-0 left-0 z-50 border-b backdrop-blur-xl">
+      <div className="container mx-auto flex items-center justify-between px-4 py-3 md:px-8">
         {/* Logo Section */}
-        <Link href="/" className="flex items-center gap-3 group">
+        <Link href="/" className="group flex items-center gap-3">
           <div className="relative">
             <Image
               src={theme === "light" ? light! : dark!}
               alt="QRK"
-              width={40}
-              height={40}
-              className="h-10 w-10 transition-transform group-hover:scale-110"
+              width={36}
+              height={36}
+              className="h-9 w-9 transition-transform group-hover:scale-105"
             />
           </div>
-          {page ? (
-            <h1 className="text-xl font-light tracking-tight md:text-2xl">
-              {page.toUpperCase()}
-            </h1>
-          ) : null}
+          <div className="hidden leading-none sm:block">
+            <span className="block text-sm font-medium tracking-[0.18em] uppercase">
+              QRK
+            </span>
+            <span className="text-muted-foreground mt-1 block text-[0.65rem] tracking-[0.2em] uppercase">
+              {page ?? "Research lab"}
+            </span>
+          </div>
         </Link>
 
         {/* Navigation */}
-        <nav className="hidden md:flex items-center gap-1">
+        <nav className="hidden items-center gap-1 md:flex">
           {links.map((link) => {
             const isActive = pathname === link.href;
             return (
               <Link
-                className={`relative px-4 py-2 text-sm font-light transition-colors hover:text-primary ${
+                className={`hover:text-primary relative px-3 py-2 text-sm font-light transition-colors ${
                   isActive ? "text-primary" : ""
                 }`}
                 href={link.href}
@@ -62,7 +63,7 @@ export function Header({
               >
                 {link.label}
                 {isActive && (
-                  <span className="absolute bottom-0 left-1/2 h-0.5 w-8 -translate-x-1/2 rounded-full bg-primary" />
+                  <span className="bg-primary absolute right-3 bottom-0 left-3 h-px" />
                 )}
               </Link>
             );
@@ -70,12 +71,12 @@ export function Header({
         </nav>
 
         {/* Mobile Navigation */}
-        <nav className="flex md:hidden items-center gap-2">
+        <nav className="flex items-center gap-2 md:hidden">
           {links.map((link) => {
             const isActive = pathname === link.href;
             return (
               <Link
-                className={`px-2 py-1 text-xs font-light transition-colors hover:text-primary ${
+                className={`hover:text-primary px-1.5 py-1 text-xs font-light transition-colors ${
                   isActive ? "text-primary" : ""
                 }`}
                 href={link.href}
@@ -88,7 +89,11 @@ export function Header({
         </nav>
 
         {/* Theme Toggle */}
-        <div className="flex items-center">
+        <div className="flex items-center gap-3">
+          <span className="text-muted-foreground hidden items-center gap-2 text-[0.65rem] tracking-[0.18em] uppercase lg:flex">
+            <span className="bg-accent h-1.5 w-1.5" />
+            Research archive
+          </span>
           <ThemeToggle />
         </div>
       </div>

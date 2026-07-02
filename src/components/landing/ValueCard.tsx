@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils";
 import type { ReactNode } from "react";
 
 const valueCardVariants = cva(
-  "group relative p-6 md:p-8 rounded-2xl border border-border/40 bg-card/50 backdrop-blur-sm transition-all duration-500",
+  "group relative border border-border/70 bg-card/55 p-6 transition-all duration-500 md:p-8",
   {
     variants: {
       size: {
@@ -23,11 +23,10 @@ const valueCardVariants = cva(
       size: "medium",
       hover: "lift",
     },
-  }
+  },
 );
 
-interface ValueCardProps
-  extends VariantProps<typeof valueCardVariants> {
+interface ValueCardProps extends VariantProps<typeof valueCardVariants> {
   icon: ReactNode;
   title: string;
   description: string;
@@ -48,35 +47,31 @@ export function ValueCard({
 }: ValueCardProps) {
   return (
     <div
-      className={cn(
-        valueCardVariants({ size, hover }),
-        accentClass,
-        className
-      )}
+      className={cn(valueCardVariants({ size, hover }), accentClass, className)}
       data-slot="value-card"
     >
       {/* Accent gradient overlay on hover */}
-      <div className="absolute inset-0 rounded-2xl bg-gradient-to-br from-[var(--card-accent)]/0 to-[var(--card-accent)]/0 group-hover:from-[var(--card-accent)]/5 group-hover:to-transparent transition-all duration-500 pointer-events-none" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-[var(--card-accent)]/0 to-[var(--card-accent)]/0 transition-all duration-500 group-hover:from-[var(--card-accent)]/5 group-hover:to-transparent" />
 
-      <div className="relative z-10 h-full flex flex-col">
+      <div className="relative z-10 flex h-full flex-col">
         {/* Icon */}
-        <div className="mb-4 md:mb-6 text-foreground/70 group-hover:text-foreground transition-colors">
-          <div className="w-10 h-10 md:w-12 md:h-12">{icon}</div>
+        <div className="text-foreground/70 group-hover:text-foreground mb-4 transition-colors md:mb-6">
+          <div className="h-10 w-10 md:h-12 md:w-12">{icon}</div>
         </div>
 
         {/* Title */}
-        <h3 className="text-xl md:text-2xl font-light mb-2 md:mb-3 tracking-tight">
+        <h3 className="mb-2 text-xl font-light tracking-tight md:mb-3 md:text-2xl">
           {title}
         </h3>
 
         {/* Description */}
-        <p className="text-sm md:text-base text-muted-foreground leading-relaxed flex-1">
+        <p className="text-muted-foreground flex-1 text-sm leading-relaxed md:text-base">
           {description}
         </p>
 
         {/* Hidden content that reveals on hover */}
         {hiddenContent && (
-          <p className="text-sm text-muted-foreground/80 mt-4 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
+          <p className="text-muted-foreground/80 mt-4 translate-y-2 text-sm opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
             {hiddenContent}
           </p>
         )}
