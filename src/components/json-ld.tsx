@@ -11,7 +11,7 @@ export function OrganizationJsonLd({
   name = "QRK Labs",
   url = "https://qrk.ng",
   logo = "https://qrk.ng/logo-dark.svg",
-  description = "AI research lab from Nigeria building human-centric language models. Open weights, transparent research, global perspective.",
+  description = "Small AI research lab in Abuja publishing work on learned tokenization, retrieval during reasoning, and model representation.",
 }: OrganizationJsonLdProps) {
   const jsonLd = {
     "@context": "https://schema.org",
@@ -102,7 +102,7 @@ export function WebSiteJsonLd() {
     name: "QRK Labs",
     url: "https://qrk.ng",
     description:
-      "AI research lab from Nigeria building human-centric language models.",
+      "Small AI research lab in Abuja publishing work on learned tokenization, retrieval during reasoning, and model representation.",
     potentialAction: {
       "@type": "SearchAction",
       target: {

@@ -10,10 +10,17 @@ interface SplitTextProps {
   enableGlitch?: boolean;
 }
 
-function getRandomScatter() {
-  const x = (Math.random() - 0.5) * 200;
-  const y = (Math.random() - 0.5) * 200;
-  const r = (Math.random() - 0.5) * 60;
+function seededUnit(seed: number) {
+  const x = Math.sin(seed) * 10000;
+  return x - Math.floor(x);
+}
+
+function getScatter(text: string, index: number) {
+  const charCode = text.charCodeAt(index) || 0;
+  const seed = text.length * 97 + charCode * 31 + index * 17;
+  const x = (seededUnit(seed) - 0.5) * 200;
+  const y = (seededUnit(seed + 11) - 0.5) * 200;
+  const r = (seededUnit(seed + 23) - 0.5) * 60;
   return { x, y, r };
 }
 
@@ -27,7 +34,7 @@ export function SplitText({
   const [isVisible, setIsVisible] = useState(false);
 
   const scatterValues = useMemo(() => {
-    return text.split("").map(() => getRandomScatter());
+    return text.split("").map((_, index) => getScatter(text, index));
   }, [text]);
 
   useEffect(() => {
@@ -41,7 +48,7 @@ export function SplitText({
           observer.disconnect();
         }
       },
-      { threshold: 0.1 }
+      { threshold: 0.1 },
     );
 
     observer.observe(element);
@@ -49,11 +56,7 @@ export function SplitText({
   }, []);
 
   return (
-    <div
-      ref={ref}
-      className={cn("inline-block", className)}
-      aria-label={text}
-    >
+    <div ref={ref} className={cn("inline-block", className)} aria-label={text}>
       {text.split("").map((char, index) => {
         const scatter = scatterValues[index];
         const isSpace = char === " ";
@@ -72,7 +75,7 @@ export function SplitText({
             className={cn(
               "inline-block",
               isVisible && "animate-char-scatter",
-              enableGlitch && "glitch-text"
+              enableGlitch && "glitch-text",
             )}
             style={{
               ["--scatter-x" as string]: `${scatter?.x ?? 0}px`,

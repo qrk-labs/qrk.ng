@@ -10,7 +10,7 @@ import { FlaskConical } from "lucide-react";
 export const metadata = {
   title: "Research",
   description:
-    "Technical papers and research notes from QRK Labs on thought injection, knowledge-augmented generation, and human-centric AI.",
+    "Technical papers and research notes from QRK Labs, currently centered on learned tokenization and model representation.",
 };
 
 export default async function ResearchPage() {
@@ -24,6 +24,9 @@ export default async function ResearchPage() {
 
         <div className="relative z-10 container mx-auto px-4 md:px-8">
           <div className="max-w-5xl">
+            <p className="text-primary mb-5 text-xs font-medium tracking-[0.24em] uppercase">
+              Papers and working notes
+            </p>
             <SplitText
               text="RESEARCH"
               className="text-6xl leading-[0.9] font-extralight tracking-tighter sm:text-7xl md:text-8xl lg:text-9xl xl:text-[10rem]"
@@ -34,8 +37,7 @@ export default async function ResearchPage() {
             <RevealOnScroll animation="fade-up" delay={300}>
               <p className="text-muted-foreground mt-8 max-w-2xl text-xl leading-relaxed font-light md:mt-12 md:text-2xl">
                 Manuscripts, preprints, technical papers, and research notes.
-                Less polish, more substance. These are working documents —
-                expect updates.
+                Some are papers. Others are working notes.
               </p>
             </RevealOnScroll>
           </div>

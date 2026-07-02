@@ -14,10 +14,10 @@ function getDisplayStatus(status: ResearchStatus) {
 
 function StatusBadge({ status }: { status: ResearchStatus }) {
   const colors: Record<ResearchStatus, string> = {
-    draft: "bg-secondary/60 text-secondary-foreground border-border/60",
-    manuscript: "bg-secondary/60 text-secondary-foreground border-border/60",
-    preprint: "bg-primary/10 text-primary border-primary/25",
-    published: "bg-chart-2/15 text-chart-2 border-chart-2/30",
+    draft: "bg-secondary/60 text-secondary-foreground border-border/70",
+    manuscript: "bg-secondary/60 text-secondary-foreground border-border/70",
+    preprint: "bg-primary/10 text-primary border-primary/30",
+    published: "bg-accent/20 text-foreground border-accent/40",
   };
 
   return (
@@ -46,12 +46,12 @@ function ResearchCard({
       <article className="group">
         <Link
           href={`/research/${paper.slug}`}
-          className="border-border/40 bg-card/30 hover:border-primary/30 hover:bg-card/50 block rounded-2xl border p-6 backdrop-blur-sm transition-all duration-300 md:p-8 lg:p-10"
+          className="border-border/70 bg-card/55 hover:border-primary/45 hover:bg-card/75 block border p-6 transition-colors duration-300 md:p-8 lg:p-10"
         >
           <div className="grid grid-cols-12 gap-6 md:gap-8">
             {/* Number indicator */}
             <div className="col-span-12 md:col-span-1">
-              <span className="text-foreground/10 group-hover:text-primary/20 text-6xl font-extralight transition-colors md:text-7xl">
+              <span className="text-foreground/10 group-hover:text-primary/25 text-6xl font-extralight transition-colors md:text-7xl">
                 {String(total - index).padStart(2, "0")}
               </span>
             </div>
@@ -90,7 +90,7 @@ function ResearchCard({
                   {paper.tags.map((tag) => (
                     <span
                       key={tag}
-                      className="bg-secondary text-secondary-foreground rounded px-2 py-1 text-xs"
+                      className="border-border/70 bg-secondary/70 text-secondary-foreground border px-2 py-1 text-xs"
                     >
                       {tag}
                     </span>

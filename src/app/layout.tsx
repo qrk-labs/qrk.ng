@@ -5,27 +5,25 @@ import "@/styles/globals.css";
 import { Header } from "@/components/header";
 import { PostHogProvider } from "@/components/PostHogProvider";
 import { OrganizationJsonLd, WebSiteJsonLd } from "@/components/json-ld";
-import SineBackground from "@/components/cursor-follow";
 
 const lexend = Lexend({ subsets: ["latin"], display: "swap" });
 
 export const metadata: Metadata = {
   title: {
-    default: "QRK Labs | Human-Centric AI Research",
+    default: "QRK Labs | AI Research Lab",
     template: "%s | QRK Labs",
   },
   description:
-    "AI research lab from Nigeria building human-centric language models. Open weights, transparent research, global perspective.",
+    "Small AI research lab in Abuja publishing work on learned tokenization, retrieval during reasoning, and model representation.",
   keywords: [
     "AI research",
-    "human-centric AI",
-    "language models",
+    "learned tokenization",
+    "DABE",
+    "retrieval",
+    "model representation",
+    "Abuja",
     "Nigeria",
-    "Africa AI",
     "thought injection",
-    "RAG alternative",
-    "open source AI",
-    "hallucination reduction",
   ],
   authors: [{ name: "QRK Labs" }],
   creator: "QRK Labs",
@@ -35,23 +33,23 @@ export const metadata: Metadata = {
     locale: "en_US",
     url: "https://qrk.ng",
     siteName: "QRK Labs",
-    title: "QRK Labs | Human-Centric AI Research",
+    title: "QRK Labs | AI Research Lab",
     description:
-      "AI research lab from Nigeria building human-centric language models. Open weights, transparent research, global perspective.",
+      "Small AI research lab in Abuja publishing work on learned tokenization, retrieval during reasoning, and model representation.",
     images: [
       {
         url: "/og/default.png",
         width: 1200,
         height: 630,
-        alt: "QRK Labs - Human-Centric AI Research",
+        alt: "QRK Labs, AI research lab from Abuja, Nigeria",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "QRK Labs | Human-Centric AI Research",
+    title: "QRK Labs | AI Research Lab",
     description:
-      "AI research lab from Nigeria building human-centric language models. Open weights, transparent research, global perspective.",
+      "Small AI research lab in Abuja publishing work on learned tokenization, retrieval during reasoning, and model representation.",
     images: ["/og/default.png"],
   },
   robots: {
@@ -87,45 +85,46 @@ export default function RootLayout({
         <PostHogProvider>
           <div id="root" className="h-full w-full">
             <ThemeProvider>
-              <SineBackground />
               <div className="noise-overlay" />
-              <Header
-                links={[
-                  { label: "Home", href: "/" },
-                  { label: "Research", href: "/research" },
-                  { label: "Blog", href: "/blog" },
-                  { label: "About", href: "/about-us" },
-                ]}
-              />
-              {children}
+              <div className="relative z-10 min-h-screen">
+                <Header
+                  links={[
+                    { label: "Home", href: "/" },
+                    { label: "Research", href: "/research" },
+                    { label: "Blog", href: "/blog" },
+                    { label: "About", href: "/about-us" },
+                  ]}
+                />
+                {children}
+
+                <footer className="border-border/40 bg-background/80 supports-[backdrop-filter]:bg-background/60 border-t backdrop-blur-xl">
+                  <div className="container mx-auto px-4 md:px-8">
+                    <div className="flex flex-col items-center justify-between gap-4 py-8 md:flex-row">
+                      <p className="text-muted-foreground text-sm font-light">
+                        QRK Labs | AI research lab | Abuja, Nigeria
+                      </p>
+                      <div className="flex items-center gap-6">
+                        <a
+                          href="https://github.com/qrk-labs"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="text-muted-foreground hover:text-primary text-sm transition-colors"
+                        >
+                          GitHub
+                        </a>
+                        <a
+                          href="mailto:hello@qrk.ng"
+                          className="text-muted-foreground hover:text-primary text-sm transition-colors"
+                        >
+                          Contact
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </footer>
+              </div>
             </ThemeProvider>
           </div>
-
-          <footer className="border-border/40 bg-background/80 supports-[backdrop-filter]:bg-background/60 border-t backdrop-blur-xl">
-            <div className="container mx-auto px-4 md:px-8">
-              <div className="flex flex-col items-center justify-between gap-4 py-8 md:flex-row">
-                <p className="text-muted-foreground text-sm font-light">
-                  QRK Labs | Human-Centric AI Research | 2026
-                </p>
-                <div className="flex items-center gap-6">
-                  <a
-                    href="https://github.com/qrk-labs"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-muted-foreground hover:text-primary text-sm transition-colors"
-                  >
-                    GitHub
-                  </a>
-                  <a
-                    href="mailto:hello@qrk.ng"
-                    className="text-muted-foreground hover:text-primary text-sm transition-colors"
-                  >
-                    Contact
-                  </a>
-                </div>
-              </div>
-            </div>
-          </footer>
         </PostHogProvider>
       </body>
     </html>
